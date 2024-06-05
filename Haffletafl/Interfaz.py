@@ -48,7 +48,7 @@ class vista:
 
 # Ejecutar el bucle principal de la aplicación
 
-v=vista(11)
+v=vista(9)
 v.llenar()
 v.graficar()
 v.ventana.mainloop()
