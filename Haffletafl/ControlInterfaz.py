@@ -1,7 +1,5 @@
 import Interfaz
-import Tablero
 import tkinter as tk
-import Soldado
 from PIL import Image, ImageTk 
 
 

@@ -23,7 +23,11 @@ class vista:
 # Configurar el título de la ventana
     ventana.title("Mi Ventana")
 # Configurar las dimensiones de la ventana
-    ventana.geometry("900x600")
+    ventana.geometry("800x600")
+# Configurar el tamaño mínimo y máximo de la ventana para evitar deformación
+    ventana.minsize(800, 600)
+    ventana.maxsize(1200, 900) 
+    ventana.resizable(True, True)
     ventana.config(bg="beige")
     pantalla=tk.Frame()
 
