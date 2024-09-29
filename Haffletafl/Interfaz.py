@@ -132,30 +132,7 @@ class vista:
                 self.labels[t[0]][t[1]]=etiquetado(t[0], t[1], self.ventana, self.Seleccionar)
                 self.asignarImagen(ub, l[0], l[1] )
                 print("----------------------------------------------------------------")
-                print(self.Verificar(ub, l[0]))
-    
-    def Verificar(self, ub,turno):
-        dim=self.j.dim
-        enemigos = []
-        desplazar = [(i, j) for i in range(-1, 2) for j in range(-1, 2) if abs(i) != abs(j)]
-        for d in desplazar:
-            enemigo = SumaDupla(ub, d)
-            if (enemigo[0] < dim  and enemigo[1] < dim):
-                cas=self.ubicar(enemigo) #label
-                content = list(map (int, cas.cget("text").split()))
-                if content != []:
-                    if (content[0] != turno):
-                        enemigos.append(enemigo)
-                        
-                        compañero = SumaDupla(enemigo, d)
-                        if (compañero[0] < dim  and compañero[1] < dim):
-                            cas=self.ubicar(compañero) #label
-                            content = list(map (int, cas.cget("text").split()))
-                            if content != []:
-                                if (content[0] != turno):
-                                    print("Kill,", enemigo)
-
-        return enemigos
+        
 
 
 # Ejecutar el bucle principal de la aplicación
