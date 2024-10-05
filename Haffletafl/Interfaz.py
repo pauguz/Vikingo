@@ -2,7 +2,7 @@ import tkinter as tk
 from Juego import juego
 from PIL import Image, ImageTk 
 from Bando import bando
-from matematiqueria import SumaDupla
+from matematiqueria import SumaDupla, MultDupla, Comprobar, direccionales
 from itertools import chain
 
 #array letras
@@ -38,18 +38,48 @@ class vista:
     def llenar(self):
         dim=self.j.dim
         self.labels=[[etiquetado(i,j,self.ventana, self.Seleccionar) for j in range(dim)] for i in range(dim)]
-        #version en varias lineas luego de declarar labels como lista de None's:
-        # for i in range(dim):
-        #    for j in range(dim):
-            # Crear y colocar la etiqueta en la ventana
-        #        label = tk.Label(self.ventana, width=4, height=2, relief="solid", borderwidth=1)
-        #        label.grid(row=i, column=j)
-        #        self.labels[i][j]=label
         self.nuncio=tk.Label()
+    
+    def validar(self, dup):
+        d=self.j.dim
+        return dup[0]<0 or dup[0]>d or dup[1]<0 or dup[1]>d
     
     def ubicar(self, dup:tuple):
         return self.labels[dup[0]][dup[1]]
+    def obtenerContNum(self, dup:tuple):
+        if(self.validar(dup)):
+            return [None]
+        casSel=self.ubicar(dup)
+        return obtener_Contenido(casSel)
+    def Discriminante(self, dup1, dup2):
+        a=self.obtenerContNum(dup1)
+        b=self.obtenerContNum(dup2)
+        if b:
+            return not a[0]==b[0]
+        else: return False
     
+    def Prueba(self,pos, eje, p=False, n=False):
+        if Comprobar(pos, eje, self.Discriminante, p, n):
+            l=self.obtenerContNum(pos)
+            if l==[1, 0]:
+                self.j.Terminar(self.labels, 'NEGRAS')
+            self.j.captura(l)
+            self.labels[pos[0]][pos[1]]=etiquetado(pos[0], pos[1], self.ventana, self.Seleccionar)
+            return True
+            
+    def Pruebas(self, pos):
+        if self.Prueba(pos, 0) or self.Prueba(pos, 1):
+            return
+        l=direccionales
+        for i in l: 
+            for j in i:
+                j=SumaDupla(j, pos)
+                if(self.validar(j)):
+                    print(j)
+                    self.Prueba(j, abs(j[0]))
+
+        
+
 #Las siguientes 3 funciones llenan las casillas con los iconos de la ficha, a nivel individual, de bando y de tablero respectivamente
     
     def asignarImagen(self, dup, num1:int, num2:int):
@@ -88,17 +118,16 @@ class vista:
             self.graficarBando(band[i], i)
 
 #Esta funcion devuelve la tupla con las 2 coordenadas de la casilla seleccionada
-    def ObtenerUbicación(self, label):
+    def ObtenerUbicación(self, label:tk.Label):
     # Get the grid info of the widget
         grid_info = label.grid_info()
-    
     # Extract the row and column from the grid info
         row = grid_info.get('row', None)  # Default to None if not found
         column = grid_info.get('column', None)  # Default to None if not found
-    
     # Return the position as a tuple
         return (row, column)
-    
+
+
 
 
     def Seleccionar(self, event:tk.Event):
@@ -115,31 +144,30 @@ class vista:
                 print("Inicio: ", end=" ")
                 print(self.seleccion)
                 self.turno+=1
-                self.turno=(self.turno)%2
+                self.turno%=2
         if(not boola and boolb):
+        #inicio y destino guardados en variables
             t=self.seleccion
-            casSel=self.ubicar(t)
             self.seleccion=None
-            l=obtener_Contenido(casSel)
+            l=self.obtenerContNum(t)
             destino=event.widget
             ub=self.ObtenerUbicación(destino)
             print("Ubicacion: ", end=" ")
             print(ub)
         #comprobar si el movimiento es posible
-            #print(self.j.mover(l, self.ObtenerUbicación(destino)))
-            if(self.j.mover(l, self.ObtenerUbicación(destino))):                 
+            if(self.j.mover(l, self.ObtenerUbicación(destino), self.labels)):                 
                 #Parte Mejorable//Vaciar lab
                 self.labels[t[0]][t[1]]=etiquetado(t[0], t[1], self.ventana, self.Seleccionar)
                 self.asignarImagen(ub, l[0], l[1] )
+                self.Pruebas(ub)
                 print("----------------------------------------------------------------")
         
 
 
 # Ejecutar el bucle principal de la aplicación
-jue=juego(9, None)
+jue=juego(13, None)
 v=vista(jue)
 v.llenar()
 v.graficar()
-#v.labels[7][7].config(image=ImageTk.PhotoImage(image=Image.open("reg.png")) )
 v.ventana.mainloop()
 

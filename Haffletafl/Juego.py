@@ -1,5 +1,6 @@
 from Bando import bando
 import matematiqueria
+import tkinter as tk
 
 def listador(dim:int):
     lisB=[]
@@ -33,11 +34,11 @@ class juego:
     def captura(self, lis:list):
         self.bandos[lis[0]].capturar(lis[1])
 
-    def mover(self, lis, destino):
+    def mover(self, lis, destino, labels):
         #Codigo por si gana el blanco
-        comp=[-1, 0]
-        #if(lis==[1, 0] and destino[0] in comp and destino[1] in comp):
-        #    self.FinDelJuego("Blancos Ganan")
+        comp=[self.dim-1, 0]
+        if(lis==[1, 0] and destino[0] in comp and destino[1] in comp):
+            self.Terminar(labels, 'BLANCAS')
 
         #Movimiento como tal
         inicio=self.ubicar(lis)
@@ -59,6 +60,15 @@ class juego:
         
 
 
-    def FinDelJuego(self, mensaje:str):
-        pass
+    def Terminar(self, labels, st):
+        for i in labels:
+            for j in i:
+                j.unbind("<Button-1>")
+        fin=tk.Tk()
+        fin.title("Fin del Juego")
+        fin.geometry("600x450")
+        st=st+' GANAN'
+        label = tk.Label(fin, text=st, bg="lightgreen", font=("Helvetica", 16))
+        label.pack(fill=tk.BOTH, expand=True)
+        fin.mainloop()
         
