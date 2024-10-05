@@ -1,5 +1,5 @@
 from Bando import bando
-import matematiqueria
+import matematiqueria as mat
 import tkinter as tk
 
 def listador(dim:int):
@@ -9,12 +9,12 @@ def listador(dim:int):
     medium=(dim**2)//2
     #Llenar con Fichas negras
     for i in range(media-2, media+3):
-        lisN.extend(matematiqueria.coordenarEnlistado(dim, i, medium*2-i, i*dim,(i+1)*dim-1 ))
+        lisN.extend(mat.coordenarEnlistado(dim, i, medium*2-i, i*dim,(i+1)*dim-1 ))
     #Llenar con Fichas blancas  
     for i in range(-2,3):
         j=2-abs(i)
         for k in range (medium+i*dim-j,medium+i*dim+j+1):
-            lisB.append(matematiqueria.coordenar(k, dim))
+            lisB.append(mat.coordenar(k, dim))
     lisB[0], lisB[6]=lisB[6],lisB[0]
     return [lisN, lisB]
 
@@ -42,7 +42,7 @@ class juego:
 
         #Movimiento como tal
         inicio=self.ubicar(lis)
-        paso=matematiqueria.getPaso(inicio, destino)
+        paso=mat.getPaso(inicio, destino)
         print("Inicio en Paso: ", end=" ")
         print(inicio)
         print("Paso: ", end=" ")
@@ -50,7 +50,7 @@ class juego:
         if(paso!=None):
             l=self.bandos[0].miembros +self.bandos[1].miembros
             while(inicio != destino):
-                inicio=matematiqueria.SumaDupla(inicio, paso)
+                inicio=mat.SumaDupla(inicio, paso)
                 if (inicio in l):
                     return False
             self.bandos[lis[0]].miembros[lis[1]]=inicio

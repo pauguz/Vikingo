@@ -51,6 +51,8 @@ class vista:
             return [None]
         casSel=self.ubicar(dup)
         return obtener_Contenido(casSel)
+    
+    #Devuelve verdadero si y solo si las dos duplas son coordenadas de casillas con fichas de distinto color o si hay una ficha y una direccion invalida
     def Discriminante(self, dup1, dup2):
         a=self.obtenerContNum(dup1)
         b=self.obtenerContNum(dup2)
@@ -107,8 +109,6 @@ class vista:
         
     def graficarBando(self, b:bando, num1:int):
         l=b.miembros
-        logos=b.logo
-
         for i in range(len(l)):
             self.asignarImagen(l[i],num1, i)
     
@@ -143,8 +143,7 @@ class vista:
                 print(l)
                 print("Inicio: ", end=" ")
                 print(self.seleccion)
-                self.turno+=1
-                self.turno%=2
+
         if(not boola and boolb):
         #inicio y destino guardados en variables
             t=self.seleccion
@@ -161,11 +160,13 @@ class vista:
                 self.asignarImagen(ub, l[0], l[1] )
                 self.Pruebas(ub)
                 print("----------------------------------------------------------------")
+                self.turno+=1
+                self.turno%=2
         
 
 
 # Ejecutar el bucle principal de la aplicación
-jue=juego(13, None)
+jue=juego(15, None)
 v=vista(jue)
 v.llenar()
 v.graficar()
