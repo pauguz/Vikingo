@@ -83,7 +83,6 @@ class vista:
         
 
 #Las siguientes 3 funciones llenan las casillas con los iconos de la ficha, a nivel individual, de bando y de tablero respectivamente
-    
     def asignarImagen(self, dup, num1:int, num2:int):
         imago=None
         if(num1==0):
@@ -128,8 +127,6 @@ class vista:
         return (row, column)
 
 
-
-
     def Seleccionar(self, event:tk.Event):
         #sel es None cuando se hace el primer clic y es una tupla cuando se hace el segundo
         sel=self.seleccion
@@ -162,7 +159,6 @@ class vista:
                 print("----------------------------------------------------------------")
                 self.turno+=1
                 self.turno%=2
-        
 
 
 # Ejecutar el bucle principal de la aplicación
@@ -171,4 +167,3 @@ v=vista(jue)
 v.llenar()
 v.graficar()
 v.ventana.mainloop()
-

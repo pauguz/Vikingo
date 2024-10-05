@@ -11,9 +11,9 @@ class bando:
         self.imagen_real=Image.open(imagen)
 
     def capturar(self, n:int):
-        self.miembros.pop(n)
+        self.miembros[n]=None
     
-
+ 
 
 
     
