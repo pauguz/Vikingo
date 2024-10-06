@@ -3,7 +3,6 @@ from Juego import juego
 from PIL import Image, ImageTk 
 from Bando import bando
 from matematiqueria import SumaDupla, MultDupla, Comprobar, direccionales
-from itertools import chain
 
 #array letras
 letras=list(['a','b','c','d','e','f','g','h','i','j','k'])
@@ -42,12 +41,12 @@ class vista:
     
     def validar(self, dup):
         d=self.j.dim
-        return dup[0]<0 or dup[0]>d or dup[1]<0 or dup[1]>d
+        return not (dup[0]<0 or dup[0]>d or dup[1]<0 or dup[1]>d)
     
     def ubicar(self, dup:tuple):
         return self.labels[dup[0]][dup[1]]
     def obtenerContNum(self, dup:tuple):
-        if(self.validar(dup)):
+        if(not self.validar(dup)):
             return [None]
         casSel=self.ubicar(dup)
         return obtener_Contenido(casSel)
@@ -56,6 +55,8 @@ class vista:
     def Discriminante(self, dup1, dup2):
         a=self.obtenerContNum(dup1)
         b=self.obtenerContNum(dup2)
+        if(not self.validar(dup2)):
+            return True
         if b:
             return not a[0]==b[0]
         else: return False
@@ -75,10 +76,10 @@ class vista:
         l=direccionales
         for i in l: 
             for j in i:
-                j=SumaDupla(j, pos)
+                c=SumaDupla(j, pos)
                 if(self.validar(j)):
-                    print(j)
-                    self.Prueba(j, abs(j[0]))
+                    #print(j)
+                    self.Prueba(c, abs(j[1]))
 
         
 
@@ -152,14 +153,14 @@ class vista:
             print(ub)
         #comprobar si el movimiento es posible
             if(self.j.mover(l, self.ObtenerUbicación(destino), self.labels)):                 
-                #Parte Mejorable//Vaciar lab
+            #Parte Mejorable//Vaciar lab
+                self.turno+=1
+                self.turno%=2
                 self.labels[t[0]][t[1]]=etiquetado(t[0], t[1], self.ventana, self.Seleccionar)
                 self.asignarImagen(ub, l[0], l[1] )
                 self.Pruebas(ub)
                 print("----------------------------------------------------------------")
-                self.turno+=1
-                self.turno%=2
-
+                
 
 # Ejecutar el bucle principal de la aplicación
 jue=juego(15, None)
