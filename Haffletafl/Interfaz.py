@@ -41,7 +41,7 @@ class vista:
     
     def validar(self, dup):
         d=self.j.dim
-        return not (dup[0]<0 or dup[0]>d or dup[1]<0 or dup[1]>d)
+        return not (dup[0]<0 or dup[0]>=d or dup[1]<0 or dup[1]>=d)
     
     def ubicar(self, dup:tuple):
         return self.labels[dup[0]][dup[1]]
@@ -56,9 +56,16 @@ class vista:
         a=self.obtenerContNum(dup1)
         b=self.obtenerContNum(dup2)
         if(not self.validar(dup2)):
+            if b and a:
+                if a[0] == None and b[0] == None:
+                    return False
             return True
         if b:
-            return not a[0]==b[0]
+            if a:
+                if a[0] == None and b[0] == None:
+                    return False
+                else: 
+                    return not a[0]==b[0]
         else: return False
     
     def Prueba(self,pos, eje, p=False, n=False):
