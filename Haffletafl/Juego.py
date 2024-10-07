@@ -15,6 +15,7 @@ def listador(dim:int):
         j=2-abs(i)
         for k in range (medium+i*dim-j,medium+i*dim+j+1):
             lisB.append(mat.coordenar(k, dim))
+    lisN.extend(mat.coordenarEnlistado(dim, dim+media, 2*medium-media*3-1, (media)*dim+1, (media+1)*dim-2) )
     lisB[0], lisB[6]=lisB[6],lisB[0]
     return [lisN, lisB]
 

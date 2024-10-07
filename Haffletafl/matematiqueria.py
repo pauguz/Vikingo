@@ -28,8 +28,8 @@ def getPaso(dup1:tuple, dup2:tuple):
         while(abs(paso[0]+paso[1])!=1):
             paso=MultDupla(paso, 0.5)
         return paso
-
-
+    
+@staticmethod
 def Comprobar(pos:tuple, eje:int, func, p:bool=False,n:bool=False):
     vec=[SumaDupla(pos, i) for i in direccionales[eje]]
     if not p:

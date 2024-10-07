@@ -41,15 +41,16 @@ class vista:
     
     def validar(self, dup):
         d=self.j.dim
-        return not (dup[0]<0 or dup[0]>=d or dup[1]<0 or dup[1]>=d)
+        return dup[0]>=0 and dup[0]<d and dup[1]>=0 and dup[1]<d
     
     def ubicar(self, dup:tuple):
         return self.labels[dup[0]][dup[1]]
+    
     def obtenerContNum(self, dup:tuple):
-        if(not self.validar(dup)):
-            return [None]
-        casSel=self.ubicar(dup)
-        return obtener_Contenido(casSel)
+        if(self.validar(dup)):
+            return obtener_Contenido(self.ubicar(dup))
+        return [None]
+        
     
     #Devuelve verdadero si y solo si las dos duplas son coordenadas de casillas con fichas de distinto color o si hay una ficha y una direccion invalida
     def Discriminante(self, dup1, dup2):
@@ -62,9 +63,9 @@ class vista:
             return True
         if b:
             if a:
-                if a[0] == None and b[0] == None:
-                    return False
-                else: 
+                #if a[0] == None and b[0] == None:
+                #    return False
+                #else: 
                     return not a[0]==b[0]
         else: return False
     
@@ -84,8 +85,8 @@ class vista:
         for i in l: 
             for j in i:
                 c=SumaDupla(j, pos)
-                if(self.validar(j)):
-                    #print(j)
+                #print(c)
+                if(self.validar(c)):
                     self.Prueba(c, abs(j[1]))
 
         
