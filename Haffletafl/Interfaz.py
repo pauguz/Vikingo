@@ -176,6 +176,7 @@ class vista:
                 self.labels[sel[0]][sel[1]]=etiquetado(sel[0], sel[1], self.ventana, self.Seleccionar)
                 self.asignarImagen(ub, *l )
                 self.Pruebas(ub)
+                self.j.blanquear(l, ub, self.labels)
                 print("----------------------------------------------------------------")
 
 
