@@ -29,22 +29,19 @@ class vista:
     def __init__(self, jue:juego, turn=1):
         self.j=jue
         self.turno=turn
+        self.Inicio()
         self.llenar()
         
     def Inicio(self, event=None):
-        d=self.j.dim
-        self.labels=[[grf.etiquetado(i,j,self.ventana, self.Seleccionar) for j in range(d)] for i in range(d)]
+        self.labels=grf.etiquetados(self.ventana, self.Seleccionar, self.j.dim)
         grf.graficar(self.j, self.labels)
         
     def llenar(self):
-        dim=self.j.dim
-        v=self.ventana
-        self.Inicio()
         self.nuncio=tk.Label(self.ventana, width=8, height=2, borderwidth=1, relief="solid")
-        re = tk.Label(v, text=" RETVRN ", borderwidth=1, relief="solid")
+        re = tk.Label(self.ventana, text=" RETVRN ", borderwidth=1, relief="solid")
         re.place(x=432, y=150)
         re.bind("<Button-1>", self.Inicio )
-        self.nuncio.place(x=dim*37.5, y=6)
+        self.nuncio.place(x=self.j.dim*37.5, y=6)
     
     def validar(self, dup):
         d=self.j.dim
@@ -84,10 +81,8 @@ class vista:
         for i in l: 
             for j in i:
                 c=mat.SumaDupla(j, pos)
-                #print(c)
                 if(self.validar(c)):
                     self.Prueba(c, abs(j[1]))
-
 
 #Esta funcion devuelve la tupla con las 2 coordenadas de la casilla seleccionada
     def ObtenerUbicación(self, label:tk.Label):
@@ -131,7 +126,6 @@ class vista:
                 self.Pruebas(ub)
                 self.j.blanquear(l, ub, self.labels)
                 print("----------------------------------------------------------------")
-
 
 # Ejecutar el bucle principal de la aplicación
 jue=juego(11, None)

@@ -9,6 +9,10 @@ def etiquetado(i:int, j:int, root, func):
     label.grid(row=i, column=j)
     label.bind("<Button-1>", func)
     return label
+def etiquetados(v, func, d):
+    return [[etiquetado(i,j, v, func) for j in range(d)] for i in range(d)]
+
+
 
 #Las siguientes 3 funciones llenan las casillas con los iconos de la ficha, a nivel individual, de bando y de tablero respectivamente
 def asignarImagen(j, dup, labels, num1:int, num2:int=1):
