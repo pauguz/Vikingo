@@ -2,15 +2,11 @@ import tkinter as tk
 from Juego import juego
 from PIL import Image, ImageTk 
 from Bando import bando
-from matematiqueria import SumaDupla, Comprobar, direccionales, Mover
+import grafiqueria as grf
+import matematiqueria as mat
 
 #array letras
 letras=list(['a','b','c','d','e','f','g','h','i','j','k'])
-def etiquetado(i:int, j:int, root, func):
-    label = tk.Label(root, width=4, height=2, relief="solid", borderwidth=3)
-    label.grid(row=i, column=j)
-    label.bind("<Button-1>", func)
-    return label
 
 def obtener_Contenido(lab: tk.Label):
     return list(map (int, lab.cget("text").split()))
@@ -35,11 +31,10 @@ class vista:
         self.turno=turn
         self.llenar()
         
-    
     def Inicio(self, event=None):
         d=self.j.dim
-        self.labels=[[etiquetado(i,j,self.ventana, self.Seleccionar) for j in range(d)] for i in range(d)]
-        self.graficar()
+        self.labels=[[grf.etiquetado(i,j,self.ventana, self.Seleccionar) for j in range(d)] for i in range(d)]
+        grf.graficar(self.j, self.labels)
         
     def llenar(self):
         dim=self.j.dim
@@ -53,17 +48,13 @@ class vista:
     
     def validar(self, dup):
         d=self.j.dim
-        return dup[0]>=0 and dup[0]<d and dup[1]>=0 and dup[1]<d
-    
-    def ubicar(self, dup:tuple):
-        return self.labels[dup[0]][dup[1]]
+        return dup[0]>=0 and dup[0]<d and dup[1]>=0 and dup[1]<d    
     
     def obtenerContNum(self, dup:tuple):
         if(self.validar(dup)):
-            return obtener_Contenido(self.ubicar(dup))
+            return obtener_Contenido(mat.ubicar(self.labels, dup))
         return [None]
         
-    
     #Devuelve verdadero si y solo si las dos duplas son coordenadas de casillas con fichas de distinto color o si hay una ficha y una direccion invalida
     def Discriminante(self, dup1, dup2):
         a=self.obtenerContNum(dup1)
@@ -79,61 +70,24 @@ class vista:
         else: return False
     
     def Prueba(self,pos, eje, p=False, n=False):
-        if Comprobar(pos, eje, self.Discriminante, p, n):
+        if mat.Comprobar(pos, eje, self.Discriminante, p, n):
             l=self.obtenerContNum(pos)
             if l==[1, 0]:
                 self.j.Terminar(self.labels, 'NEGRAS')
-            self.labels[pos[0]][pos[1]]=etiquetado(pos[0], pos[1], self.ventana, self.Seleccionar)
+            self.labels[pos[0]][pos[1]]=grf.etiquetado(pos[0], pos[1], self.ventana, self.Seleccionar)
             return True
             
     def Pruebas(self, pos):
         if self.Prueba(pos, 0) or self.Prueba(pos, 1):
             return
-        l=direccionales
+        l=mat.direccionales
         for i in l: 
             for j in i:
-                c=SumaDupla(j, pos)
+                c=mat.SumaDupla(j, pos)
                 #print(c)
                 if(self.validar(c)):
                     self.Prueba(c, abs(j[1]))
 
-        
-
-#Las siguientes 3 funciones llenan las casillas con los iconos de la ficha, a nivel individual, de bando y de tablero respectivamente
-    def asignarImagen(self, dup, num1:int, num2:int=1):
-        imago=None
-    #Crear Texto identificador
-        t=str(num1)
-        if(num1==0):
-            imago=self.j.bandos[0].logo
-        elif(num2==0):
-            imago=self.j.bandos[1].imagen_real
-            t=t+" "+str(num2)
-        else:
-            imago=self.j.bandos[1].logo
-    #Tomar el valor de la casilla
-        casilla=self.ubicar(dup)
-    #Ajustar tamaño de la imagen y su formato
-        #imago=imago.resize((casilla.winfo_width(),casilla.winfo_height()), Image.LANCZOS )
-        imago=imago.resize((30,30), Image.LANCZOS )
-        tkimago=ImageTk.PhotoImage(image=imago)
-    
-    #Asignar Imagen y Texto
-        casilla.config(image=tkimago, text=t, width=30, height=32)
-        casilla.image=tkimago 
-        #casilla.grid(row=dup[0],column=dup[1])
-    #Reemplazar vieja casilla por la nueva
-        self.labels[dup[0]][dup[1]]=casilla
-        
-    def graficarBando(self, b:bando, num1:int):
-        l=b.miembros
-        for i in range(len(l)):
-            self.asignarImagen(l[i],num1, i)
-    
-    def graficar(self):
-        band=self.j.bandos
-        for i in range(len(band)):
-            self.graficarBando(band[i], i)
 
 #Esta funcion devuelve la tupla con las 2 coordenadas de la casilla seleccionada
     def ObtenerUbicación(self, label:tk.Label):
@@ -144,7 +98,6 @@ class vista:
         column = grid_info.get('column', None)  # Default to None if not found
     # Return the position as a tuple
         return (row, column)
-
 
     def Seleccionar(self, event:tk.Event):
         #sel es None cuando se hace el primer clic y es una tupla cuando se hace el segundo
@@ -169,12 +122,12 @@ class vista:
             print("Ubicacion: ", end=" ")
             print(ub)
         #comprobar si el movimiento es posible
-            if(Mover(sel, self.ObtenerUbicación(destino), self.obtenerContNum)):                 
+            if(mat.Mover(sel, self.ObtenerUbicación(destino), self.obtenerContNum)):                 
             #Parte Mejorable//Vaciar label
                 self.turno+=1
                 self.turno%=2
-                self.labels[sel[0]][sel[1]]=etiquetado(sel[0], sel[1], self.ventana, self.Seleccionar)
-                self.asignarImagen(ub, *l )
+                self.labels[sel[0]][sel[1]]=grf.etiquetado(sel[0], sel[1], self.ventana, self.Seleccionar)
+                grf.asignarImagen(self.j, ub, self.labels, *l )
                 self.Pruebas(ub)
                 self.j.blanquear(l, ub, self.labels)
                 print("----------------------------------------------------------------")

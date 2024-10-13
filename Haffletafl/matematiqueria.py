@@ -12,6 +12,10 @@ def coordenarEnlistado(unidad:int, *args ):
     return lis
 
 @staticmethod
+def ubicar(labels, dup:tuple):
+    return labels[dup[0]][dup[1]]
+
+@staticmethod
 def SumaDupla(dup1:tuple, dup2:tuple):
     return tuple(a + b for a, b in zip(dup1, dup2))
 
