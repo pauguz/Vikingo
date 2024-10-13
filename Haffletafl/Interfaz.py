@@ -2,7 +2,7 @@ import tkinter as tk
 from Juego import juego
 from PIL import Image, ImageTk 
 from Bando import bando
-from matematiqueria import SumaDupla, MultDupla, Comprobar, direccionales
+from matematiqueria import SumaDupla, Comprobar, direccionales, Mover
 
 #array letras
 letras=list(['a','b','c','d','e','f','g','h','i','j','k'])
@@ -33,11 +33,23 @@ class vista:
     def __init__(self, jue:juego, turn=1):
         self.j=jue
         self.turno=turn
+        self.llenar()
+        
+    
+    def Inicio(self, event=None):
+        d=self.j.dim
+        self.labels=[[etiquetado(i,j,self.ventana, self.Seleccionar) for j in range(d)] for i in range(d)]
+        self.graficar()
         
     def llenar(self):
         dim=self.j.dim
-        self.labels=[[etiquetado(i,j,self.ventana, self.Seleccionar) for j in range(dim)] for i in range(dim)]
-        self.nuncio=tk.Label()
+        v=self.ventana
+        self.Inicio()
+        self.nuncio=tk.Label(self.ventana, width=8, height=2, borderwidth=1, relief="solid")
+        re = tk.Label(v, text=" RETVRN ", borderwidth=1, relief="solid")
+        re.place(x=432, y=150)
+        re.bind("<Button-1>", self.Inicio )
+        self.nuncio.place(x=dim*37.5, y=6)
     
     def validar(self, dup):
         d=self.j.dim
@@ -63,9 +75,6 @@ class vista:
             return True
         if b:
             if a:
-                #if a[0] == None and b[0] == None:
-                #    return False
-                #else: 
                     return not a[0]==b[0]
         else: return False
     
@@ -74,7 +83,6 @@ class vista:
             l=self.obtenerContNum(pos)
             if l==[1, 0]:
                 self.j.Terminar(self.labels, 'NEGRAS')
-            self.j.captura(l)
             self.labels[pos[0]][pos[1]]=etiquetado(pos[0], pos[1], self.ventana, self.Seleccionar)
             return True
             
@@ -92,12 +100,15 @@ class vista:
         
 
 #Las siguientes 3 funciones llenan las casillas con los iconos de la ficha, a nivel individual, de bando y de tablero respectivamente
-    def asignarImagen(self, dup, num1:int, num2:int):
+    def asignarImagen(self, dup, num1:int, num2:int=1):
         imago=None
+    #Crear Texto identificador
+        t=str(num1)
         if(num1==0):
             imago=self.j.bandos[0].logo
         elif(num2==0):
             imago=self.j.bandos[1].imagen_real
+            t=t+" "+str(num2)
         else:
             imago=self.j.bandos[1].logo
     #Tomar el valor de la casilla
@@ -106,8 +117,7 @@ class vista:
         #imago=imago.resize((casilla.winfo_width(),casilla.winfo_height()), Image.LANCZOS )
         imago=imago.resize((30,30), Image.LANCZOS )
         tkimago=ImageTk.PhotoImage(image=imago)
-    #Crear Texto identificador
-        t=str(num1)+" "+str(num2)
+    
     #Asignar Imagen y Texto
         casilla.config(image=tkimago, text=t, width=30, height=32)
         casilla.image=tkimago 
@@ -152,27 +162,24 @@ class vista:
 
         if(not boola and boolb):
         #inicio y destino guardados en variables
-            t=self.seleccion
             self.seleccion=None
-            l=self.obtenerContNum(t)
+            l=self.obtenerContNum(sel)
             destino=event.widget
             ub=self.ObtenerUbicación(destino)
             print("Ubicacion: ", end=" ")
             print(ub)
         #comprobar si el movimiento es posible
-            if(self.j.mover(l, self.ObtenerUbicación(destino), self.labels)):                 
-            #Parte Mejorable//Vaciar lab
+            if(Mover(sel, self.ObtenerUbicación(destino), self.obtenerContNum)):                 
+            #Parte Mejorable//Vaciar label
                 self.turno+=1
                 self.turno%=2
-                self.labels[t[0]][t[1]]=etiquetado(t[0], t[1], self.ventana, self.Seleccionar)
-                self.asignarImagen(ub, l[0], l[1] )
+                self.labels[sel[0]][sel[1]]=etiquetado(sel[0], sel[1], self.ventana, self.Seleccionar)
+                self.asignarImagen(ub, *l )
                 self.Pruebas(ub)
                 print("----------------------------------------------------------------")
-                
+
 
 # Ejecutar el bucle principal de la aplicación
-jue=juego(15, None)
+jue=juego(11, None)
 v=vista(jue)
-v.llenar()
-v.graficar()
 v.ventana.mainloop()

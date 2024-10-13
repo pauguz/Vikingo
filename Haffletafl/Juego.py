@@ -41,23 +41,7 @@ class juego:
         if(lis==[1, 0] and destino[0] in comp and destino[1] in comp):
             self.Terminar(labels, 'BLANCAS')
 
-        #Movimiento como tal
-        inicio=self.ubicar(lis)
-        paso=mat.getPaso(inicio, destino)
-        print("Inicio en Paso: ", end=" ")
-        print(inicio)
-        print("Paso: ", end=" ")
-        print(paso)
-        if(paso!=None):
-            l=self.bandos[0].miembros +self.bandos[1].miembros
-            while(inicio != destino):
-                inicio=mat.SumaDupla(inicio, paso)
-                if (inicio in l):
-                    return False
-            self.bandos[lis[0]].miembros[lis[1]]=inicio
-            print("Destino: ")
-            print(inicio)
-            return True
+        
         
 
 

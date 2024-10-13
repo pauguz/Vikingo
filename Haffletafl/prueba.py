@@ -36,9 +36,6 @@ labels[2].config(image=tk_imgn)
 
 
 # Ejecutar el bucle principal de la aplicación
-root.mainloop()
-#print(type(labels[0]))
+#root.mainloop()
 
-
-
-
+help(tk.Label())

@@ -38,3 +38,28 @@ def Comprobar(pos:tuple, eje:int, func, p:bool=False,n:bool=False):
         n=func(pos, vec[1])
     return p and n 
     
+@staticmethod
+def Mover(inicio, destino, func):
+    #Movimiento como tal
+    paso=getPaso(inicio, destino)
+    print("Inicio en Paso: ", end=" ")
+    print(inicio)
+    print("Paso: ", end=" ")
+    print(paso)
+    if(paso!=None):
+        while(inicio != destino):
+            inicio=SumaDupla(inicio, paso)
+            
+            if (func(inicio) ):
+                
+                return False
+        print("Destino: ")
+        print(inicio)
+        return True
+
+@staticmethod
+def Dimendor(d):
+    if d.isdigit():
+        d=int(d)
+        return d>=9 and d%2==1
+    return False
