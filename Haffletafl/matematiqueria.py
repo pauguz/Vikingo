@@ -62,6 +62,26 @@ def Mover(inicio, destino, func):
         return True
 
 @staticmethod
+def MovimientosPosibles(inicio, func):
+    direccionales = [(1, 0), (-1, 0), (0, 1), (0, -1)]  
+    movimientosPosibles = []
+    
+    for direccion in direccionales:
+        puedoAgregar = True
+        iteracion = 1  # Para ir aumentando la distancia de la torre en la dirección
+        while puedoAgregar:
+            # Calcular el nuevo fin sumando la dirección multiplicada por la iteración
+            fin = SumaDupla(inicio, MultDupla(direccion, iteracion))
+            
+            # Verificar si se puede mover al nuevo fin
+            puedoAgregar = Mover(inicio, fin, func)
+            if puedoAgregar:
+                movimientosPosibles.append(fin)  # Agregar el movimiento posible
+            iteracion += 1  # Aumentar la distancia en esa dirección
+    
+    return movimientosPosibles
+
+@staticmethod
 def Dimendor(d):
     if d.isdigit():
         d=int(d)
