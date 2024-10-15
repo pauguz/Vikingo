@@ -49,3 +49,15 @@ def graficar(j, labels):
     band=j.bandos
     for i in range(len(band)):
         graficarBando(labels, band[i], i, j)
+
+def graficarMovimientosPosibles(labels, movimientos):
+    for mov in movimientos:
+        fila, columna = mov
+        casilla = labels[fila][columna]
+        casilla.config(bg='turquoise')
+
+def restaurarMovimientos(labels, movimientos):
+    for mov in movimientos:#restaurar el estado original de las casillas con posibles movimientos
+        fila, columna = mov
+        casilla = labels[fila][columna]
+        casilla.config(bg="beige")

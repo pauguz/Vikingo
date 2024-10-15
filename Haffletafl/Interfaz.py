@@ -13,6 +13,7 @@ def obtener_Contenido(lab: tk.Label):
 
 class vista:
     seleccion=None  
+    movimientos_graficados = []
 # Crear una instancia de la ventana
     ventana = tk.Tk()
 # Configurar el título de la ventana
@@ -107,6 +108,9 @@ class vista:
                 print(l)
                 print("Inicio: ", end=" ")
                 print(self.seleccion)
+                self.movimientos_graficados = mat.MovimientosPosibles(self.seleccion, self.obtenerContNum)
+                movimientos = self.movimientos_graficados
+                grf.graficarMovimientosPosibles(self.labels, movimientos)
 
         if(not boola and boolb):
         #inicio y destino guardados en variables
@@ -116,6 +120,7 @@ class vista:
             ub=self.ObtenerUbicación(destino)
             print("Ubicacion: ", end=" ")
             print(ub)
+            grf.restaurarMovimientos(self.labels, self.movimientos_graficados)
         #comprobar si el movimiento es posible
             if(mat.Mover(sel, self.ObtenerUbicación(destino), self.obtenerContNum)):                 
             #Parte Mejorable//Vaciar label
