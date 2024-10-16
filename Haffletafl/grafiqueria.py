@@ -57,7 +57,8 @@ def graficarMovimientosPosibles(labels, movimientos):
         casilla.config(bg='turquoise')
 
 def restaurarMovimientos(labels, movimientos):
-    for mov in movimientos:#restaurar el estado original de las casillas con posibles movimientos
+    for mov in movimientos: #restaurar el estado original de las casillas con posibles movimientos
         fila, columna = mov
         casilla = labels[fila][columna]
-        casilla.config(bg="beige")
+        casilla.config(bg="SystemButtonFace")
+

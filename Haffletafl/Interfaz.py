@@ -1,7 +1,5 @@
 import tkinter as tk
 from Juego import juego
-from PIL import Image, ImageTk 
-from Bando import bando
 import grafiqueria as grf
 import matematiqueria as mat
 
@@ -58,13 +56,9 @@ class vista:
         a=self.obtenerContNum(dup1)
         b=self.obtenerContNum(dup2)
         if(not self.validar(dup2)):
-            if b and a:
-                if a[0] == None and b[0] == None:
-                    return False
             return True
-        if b:
-            if a:
-                    return not a[0]==b[0]
+        if b and a:
+                return not a[0]==b[0]
         else: return False
     
     def Prueba(self,pos, eje, p=False, n=False):
@@ -122,7 +116,7 @@ class vista:
             print(ub)
             grf.restaurarMovimientos(self.labels, self.movimientos_graficados)
         #comprobar si el movimiento es posible
-            if(mat.Mover(sel, self.ObtenerUbicación(destino), self.obtenerContNum)):                 
+            if(ub in self.movimientos_graficados):                 
             #Parte Mejorable//Vaciar label
                 self.turno+=1
                 self.turno%=2

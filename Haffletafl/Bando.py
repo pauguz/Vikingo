@@ -12,8 +12,7 @@ class bando:
 
     def capturar(self, n:int):
         self.miembros[n]=None
+
     
  
 
-
-    
