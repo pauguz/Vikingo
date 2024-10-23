@@ -1,4 +1,4 @@
-# Ajedrez Vikingo Halftafl
+# Ajedrez Vikingo Hnefatafl
 
 ![Ajedrez Vikingo](/Haffletafl/wgame.png)
 
