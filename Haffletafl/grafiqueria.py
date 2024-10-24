@@ -62,3 +62,11 @@ def restaurarMovimientos(labels, movimientos):
         casilla = labels[fila][columna]
         casilla.config(bg="SystemButtonFace")
 
+def fin():
+        fin=tk.Toplevel()
+        fin.title("Fin del Juego")
+        fin.geometry("600x450")
+        st+=' GANAN'
+        label = tk.Label(fin, text=st, bg="lightgreen", font=("Helvetica", 16))
+        label.pack(fill=tk.BOTH, expand=True)
+        fin.mainloop()

@@ -2,9 +2,10 @@ import tkinter as tk
 from PIL import Image, ImageTk
 
 class bando:
-    def __init__(self, booleano: bool, imagen, lis:list):
-        self.polo=booleano
+    def __init__(self, lis:list):
         self.miembros=lis
+        
+    def setsoldado(self, imagen):
         self.logo=Image.open(imagen)
 
     def setRey(self, imagen):

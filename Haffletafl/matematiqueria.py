@@ -57,18 +57,18 @@ def Mover(inicio, destino, func):
 @staticmethod
 def MovimientosPosibles(inicio, func):
     movimientosPosibles = []
-    dir=direccionales[0] + direccionales[1]
-    for direccion in dir:
+    d=direccionales[0] + direccionales[1]
+    for direccion in d:
         puedoAgregar = True
-        iteracion = 1  # Para ir aumentando la distancia de la torre en la dirección
+        i = 1  # Para ir avanzando en la dirección
         while puedoAgregar:
             # Calcular el nuevo fin sumando la dirección multiplicada por la iteración
-            fin = SumaDupla(inicio, MultDupla(direccion, iteracion))
+            fin = SumaDupla(inicio, MultDupla(direccion, i))
             # Verificar si se puede mover al nuevo fin
             puedoAgregar = not func(fin)
             if puedoAgregar:
                 movimientosPosibles.append(fin)  # Agregar el movimiento posible
-            iteracion += 1  # Aumentar la distancia en esa dirección
+            i += 1  # Aumentar la distancia en esa dirección
     return movimientosPosibles
 
 @staticmethod
