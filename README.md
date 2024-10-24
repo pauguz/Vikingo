@@ -21,5 +21,5 @@ Sigue los siguientes pasos para ejecutar el proyecto:
 
 3. Ejecuta el archivo principal para iniciar la interfaz gráfica del juego:
     ```bash
-    python .\Interfaz.py
+    python .\Menu.py
     ```
