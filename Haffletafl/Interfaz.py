@@ -2,6 +2,7 @@ import tkinter as tk
 from Juego import juego
 import grafiqueria as grf
 import matematiqueria as mat
+from Bot import bot
 #array letras
 letras=list(['a','b','c','d','e','f','g','h','i','j','k'])
 
@@ -119,6 +120,8 @@ class vista:
                 self.movimientos_graficados = mat.MovimientosPosibles(self.seleccion, self.obtenerContNum)
                 movimientos = self.movimientos_graficados
                 grf.graficarMovimientosPosibles(self.labels, movimientos)
+                testBot = bot(self.j.dim, self.j.bandos, self.turno)
+                #testBot.obtenerMiBando(self.j.bandos)
 
         if(not boola and boolb):
         #inicio y destino guardados en variables
