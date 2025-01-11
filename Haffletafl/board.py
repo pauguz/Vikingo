@@ -75,4 +75,41 @@ class Board:
  
     def scan_direction_for_moves(self, start: tuple, direction: Direction, team):
         moves = {}
+        left = Direction(-direction.y, direction.x)
+        right = Direction(direction.y, -direction.x)
+        current_position = (start[0] + direction.x, start[1] + direction.y)
+        
+        if self.is_out_of_bounds(current_position):
+            return moves
+        current_piece = self.get_piece(current_position[0], current_position[1])
+        if current_piece == 0:
+            eliminate_left = self.try_to_eliminate_enemy(current_position, left, team)
+            eliminate_forward = self.try_to_eliminate_enemy(current_position, direction, team)
+            eliminate_right = self.try_to_eliminate_enemy(current_position, right, team)
+            self.union_dicts(moves, eliminate_left)
+            self.union_dicts(moves, eliminate_forward)
+            self.union_dicts(moves, eliminate_right)
+            
+            moves.update(self.scan_direction_for_moves(current_position, direction, team))
+        elif current_piece.team == team:
+            return moves
+        else:
+            return moves
+
         return moves
+    
+    def union_dicts(self, dict1, dict2):
+        for key, value in dict2.items():
+            if key in dict1:
+                dict1[key].extend(value)  
+            else:
+                dict1[key] = value
+
+    def try_to_eliminate_enemy(self, initial_position: tuple, direction: Direction, team):
+        elimination_list = {} # (1, 2) = {[Piece]}
+
+        return elimination_list  # (1, 2) = {[(1,3)]}
+
+    def is_out_of_bounds(self, position: tuple):
+        # Assuming the board size is 11x11, adjusting the bounds check
+        return position[0] < 0 or position[0] >= 11 or position[1] < 0 or position[1] >= 11 
