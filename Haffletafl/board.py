@@ -69,11 +69,11 @@ class Board:
         position_start = (piece.row, piece.col)
 
         for direction in directions:
-            moves.update(self.scan_direction_for_moves(position_start, direction, piece.team))
+            moves.update(self.explore_direction_for_moves(position_start, direction, piece.team))
     
         return moves
  
-    def scan_direction_for_moves(self, start: tuple, direction: Direction, team):
+    def explore_direction_for_moves(self, start: tuple, direction: Direction, team):
         moves = {}
         left = Direction(-direction.y, direction.x)
         right = Direction(direction.y, -direction.x)
@@ -90,7 +90,7 @@ class Board:
             self.union_dicts(moves, eliminate_forward)
             self.union_dicts(moves, eliminate_right)
             
-            moves.update(self.scan_direction_for_moves(current_position, direction, team))
+            moves.update(self.explore_direction_for_moves(current_position, direction, team))
         elif current_piece.team == team:
             return moves
         else:
