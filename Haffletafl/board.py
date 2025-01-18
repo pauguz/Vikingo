@@ -107,6 +107,39 @@ class Board:
 
     def try_to_eliminate_enemy(self, initial_position: tuple, direction: Direction, team):
         elimination_list = {} # (1, 2) = {[Piece]}
+        elimination_list[initial_position] = []
+        current_position = (initial_position[0] + direction.x, initial_position[1] + direction.y)
+        opposite_position = (initial_position[0] - direction.x, initial_position[1] - direction.y)
+
+        if self.is_out_of_bounds(current_position):
+            if not self.is_out_of_bounds(opposite_position):
+                opposite_piece = self.get_piece(opposite_position[0], opposite_position[1])
+                if opposite_piece != 0 and opposite_piece.team != team: 
+                    elimination_list[initial_position] = [self.get_piece(initial_position[0], initial_position[1])]                
+                
+            return elimination_list # either {[]} or {[Initial Piece]}
+
+        current_piece = self.get_piece(current_position[0], current_position[1])
+        
+        if current_piece == 0:
+            return elimination_list
+        elif current_piece.team == team:
+            return elimination_list
+        else:
+            next_position = (current_position[0] + direction.x, current_position[1] + direction.y)
+            if self.is_out_of_bounds(next_position):
+                elimination_list[initial_position] = [current_piece]
+
+                return elimination_list
+            
+            next_piece = self.get_piece(next_position[0], next_position[1])
+            
+            if next_piece == 0:
+                return elimination_list
+            if next_piece.team == team:
+                elimination_list[initial_position] = [current_piece]
+            else:
+                pass
 
         return elimination_list  # (1, 2) = {[(1,3)]}
 
