@@ -69,11 +69,11 @@ class Board:
         position_start = (piece.row, piece.col)
 
         for direction in directions:
-            moves.update(self.explore_direction_for_moves(position_start, direction, piece.team))
+            moves.update(self.explore_direction_for_moves(position_start, direction, piece.team, piece))
     
         return moves
  
-    def explore_direction_for_moves(self, start: tuple, direction: Direction, team):
+    def explore_direction_for_moves(self, start: tuple, direction: Direction, team, piece_movin: None):
         moves = {}
         left = Direction(-direction.y, direction.x)
         right = Direction(direction.y, -direction.x)
@@ -90,7 +90,18 @@ class Board:
             self.union_dicts(moves, eliminate_forward)
             self.union_dicts(moves, eliminate_right)
             
-            moves.update(self.explore_direction_for_moves(current_position, direction, team))
+            # dangerous_position(current_position, left, right, team)
+            eliminate_myself = {}
+            left_position = (current_position[0] + left.x, current_position[1] + left.y)
+            right_position = (current_position[0] + right.x, current_position[1] + right.y)
+            if not self.is_out_of_bounds(right_position) and not self.is_out_of_bounds(left_position):
+                left_piece = self.get_piece(left_position[0], left_position[1])
+                right_piece = self.get_piece(right_position[0], right_position[1])
+                if left_piece != 0 and left_piece.team != team and right_piece != 0 and right_piece.team != team:
+                    eliminate_myself[current_position] = [piece_movin]
+            self.union_dicts(moves, eliminate_myself) 
+
+            moves.update(self.explore_direction_for_moves(current_position, direction, team, piece_movin))
         elif current_piece.team == team:
             return moves
         else:
