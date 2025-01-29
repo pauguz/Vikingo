@@ -9,6 +9,28 @@ letras=list(['a','b','c','d','e','f','g','h','i','j','k'])
 def obtener_Contenido(lab: tk.Label):
     return list(map (int, lab.cget("text").split()))
 
+class vistaa:
+    seleccion=None  
+    movimientos_graficados = []
+    # Crear una instancia de la ventana
+    ventana = tk.Tk()
+    # Configurar el título de la ventana
+    ventana.title("Mi Ventana")
+    # Configurar las dimensiones de la ventana
+    ventana.geometry("800x600")
+    # Configurar el tamaño mínimo y máximo de la ventana para evitar deformación
+    ventana.minsize(800, 600)
+    ventana.maxsize(1200, 900) 
+    ventana.resizable(True, True)
+    ventana.config(bg="beige")
+    pantalla=tk.Frame()
+
+    def __init__(self, jue:juego, turn=1):
+        self.j=jue
+        self.turno=turn
+        self.Inicio()
+        self.llenar()
+
 def ventor(v):
  # Configurar el título de la ventana
     v.title("Mi Ventana")
@@ -22,12 +44,21 @@ def ventor(v):
 
 class vista:
     seleccion=None  
-    movimientos_graficados = []    
-    #pantalla=tk.Frame()
+    movimientos_graficados = []
+    # Crear una instancia de la ventana
+    ventana = tk.Tk()
+    # Configurar el título de la ventana
+    ventana.title("Mi Ventana")
+    # Configurar las dimensiones de la ventana
+    ventana.geometry("800x600")
+    # Configurar el tamaño mínimo y máximo de la ventana para evitar deformación
+    ventana.minsize(800, 600)
+    ventana.maxsize(1200, 900) 
+    ventana.resizable(True, True)
+    ventana.config(bg="beige")
+    pantalla=tk.Frame()
 
     def __init__(self, jue:juego):
-        self.ventana = tk.Toplevel()
-        ventor(self.ventana)
         self.j=jue
         self.agent = Agent()
         newBoard, whites, blacks = self.ObtenerMatrizBoard()
@@ -163,7 +194,7 @@ class vista:
                 print("----------------------------------------------------------------")
 
 # Ejecutar el bucle principal de la aplicación
-#jue=juego(15, None)
-#jue.dibujar()
-#v=vista(jue)
-#v.ventana.mainloop()
+jue=juego(15, None)
+jue.dibujar()
+v=vista(jue)
+v.ventana.mainloop()
