@@ -2,6 +2,8 @@ import tkinter as tk
 from Juego import juego
 import grafiqueria as grf
 import matematiqueria as mat
+from agent import Agent
+from piece import Piece
 #array letras
 letras=list(['a','b','c','d','e','f','g','h','i','j','k'])
 
@@ -28,9 +30,25 @@ class vista:
         self.ventana = tk.Toplevel()
         ventor(self.ventana)
         self.j=jue
+        self.agent = Agent()
+        newBoard, whites, blacks = self.builBoardMatrix()
+        self.agent.setBoard(newBoard, whites, blacks)
         self.Inicio()
         self.llenar()
+
+    def builBoardMatrix(self):
+        matrix = []
+        for i in range(11):
+            matrix.append([0 for j in range(11)])
+        for black in self.j.bandos[0].miembros:
+            matrix[black[0]][black[1]] =(Piece(black[0], black[1], 'black'))
+
+        for white in self.j.bandos[1].miembros:
+            matrix[white[0]][white[1]] =(Piece(white[0], white[1], 'white'))
         
+        return matrix, len(self.j.bandos[0].miembros), len(self.j.bandos[1].miembros)
+
+
     def Inicio(self, event=None, t=1):
         self.turno=t
         self.labels=grf.etiquetados(self.ventana, self.Seleccionar, self.j.dim)
