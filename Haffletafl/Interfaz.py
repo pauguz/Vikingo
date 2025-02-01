@@ -137,6 +137,8 @@ class vista:
                 self.movimientos_graficados = mat.MovimientosPosibles(self.seleccion, self.obtenerContNum)
                 movimientos = self.movimientos_graficados
                 grf.graficarMovimientosPosibles(self.labels, movimientos)
+                dicresult = self.agent.select(self.seleccion[0], self.seleccion[1])
+                print(f"{dicresult}")
 
         if(not boola and boolb):
         #inicio y destino guardados en variables
@@ -159,7 +161,7 @@ class vista:
                 print("----------------------------------------------------------------")
 
 # Ejecutar el bucle principal de la aplicación
-#jue=juego(15, None)
-#jue.dibujar()
-#v=vista(jue)
-#v.ventana.mainloop()
+jue=juego(11, None)
+jue.dibujar()
+v=vista(jue)
+v.ventana.mainloop()
