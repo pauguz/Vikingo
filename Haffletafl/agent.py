@@ -2,8 +2,9 @@ import pygame
 from board import Board
 
 class Agent:
-    def __init__(self):
+    def __init__(self, team = 'white'):
         self._init()
+        self.turn = team
     
     def update(self):
         pass
@@ -26,6 +27,13 @@ class Agent:
                 return self.valid_moves
         
         return 'Agent: No piece selected'
+    
+    def change_turn(self):
+        self.valid_moves = {}
+        if self.turn == 'black':
+            self.turn = 'white'
+        else:
+            self.turn = 'black' 
         
     def setBoard(self, board, whites, blacks):
 
