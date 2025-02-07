@@ -73,7 +73,7 @@ class Board:
     
         return moves
  
-    def explore_direction_for_moves(self, start: tuple, direction: Direction, team, piece_movin: None):
+    def explore_direction_for_moves(self, start: tuple, direction: Direction, team, piece_movin):
         moves = {}
         left = Direction(-direction.y, direction.x)
         right = Direction(direction.y, -direction.x)
@@ -83,23 +83,23 @@ class Board:
             return moves
         current_piece = self.get_piece(current_position[0], current_position[1])
         if current_piece == 0:
-            eliminate_left = self.try_to_eliminate_enemy(current_position, left, team)
-            eliminate_forward = self.try_to_eliminate_enemy(current_position, direction, team)
-            eliminate_right = self.try_to_eliminate_enemy(current_position, right, team)
+            eliminate_left = self.try_to_eliminate_enemy(current_position, left, team, piece_movin)
+            eliminate_forward = self.try_to_eliminate_enemy(current_position, direction, team, piece_movin)
+            eliminate_right = self.try_to_eliminate_enemy(current_position, right, team, piece_movin)
             self.union_dicts(moves, eliminate_left)
             self.union_dicts(moves, eliminate_forward)
             self.union_dicts(moves, eliminate_right)
             
             # dangerous_position(current_position, left, right, team)
-            eliminate_myself = {}
+            self_delete = {}
             left_position = (current_position[0] + left.x, current_position[1] + left.y)
             right_position = (current_position[0] + right.x, current_position[1] + right.y)
             if not self.is_out_of_bounds(right_position) and not self.is_out_of_bounds(left_position):
                 left_piece = self.get_piece(left_position[0], left_position[1])
                 right_piece = self.get_piece(right_position[0], right_position[1])
                 if left_piece != 0 and left_piece.team != team and right_piece != 0 and right_piece.team != team:
-                    eliminate_myself[current_position] = [piece_movin]
-            self.union_dicts(moves, eliminate_myself) 
+                    self_delete[current_position] = [piece_movin]
+            self.union_dicts(moves, self_delete) 
 
             moves.update(self.explore_direction_for_moves(current_position, direction, team, piece_movin))
         elif current_piece.team == team:
@@ -116,7 +116,7 @@ class Board:
             else:
                 dict1[key] = value
 
-    def try_to_eliminate_enemy(self, initial_position: tuple, direction: Direction, team):
+    def try_to_eliminate_enemy(self, initial_position: tuple, direction: Direction, team, piece_movin):
         elimination_list = {} # (1, 2) = {[Piece]}
         elimination_list[initial_position] = []
         current_position = (initial_position[0] + direction.x, initial_position[1] + direction.y)
@@ -126,7 +126,7 @@ class Board:
             if not self.is_out_of_bounds(opposite_position):
                 opposite_piece = self.get_piece(opposite_position[0], opposite_position[1])
                 if opposite_piece != 0 and opposite_piece.team != team: 
-                    elimination_list[initial_position] = [self.get_piece(initial_position[0], initial_position[1])]                
+                    elimination_list[initial_position] = [piece_movin]                
                 
             return elimination_list # either {[]} or {[Initial Piece]}
 
