@@ -22,11 +22,32 @@ class Agent:
                 self.selected = selection
                 self.valid_moves = self.board.get_valid_moves(self.selected)
 
-                print(f"Piece({row},{col}) Content[{self.selected}]")
-                self.selected = None
+                #print(f"Selected Piece({row},{col}) Content[{self.selected}]")
+                
                 return self.valid_moves
+            
+            return 'Agent: Incorrect Pice Selected'
+
+        else:
+            # If a piece is selected, attempt to make the move
+            result = self._move(row, col)
+            if result:
+                #Move was successful: change turn and reset the selection
+                self.valid_moves = {}
+                self.selected = None
+
+                return 'Agent: successful: change turn and reset'
+
+            else:
+                # # Move was unsuccessful: reset and reselect the piece
+                self.valid_moves = {}
+                self.selected = None
+
+                return 'Agent: unsuccessful: reset and reselect'
+
+    def _move(self, row, col):
         
-        return 'Agent: No piece selected'
+        return True
     
     def change_turn(self):
         self.valid_moves = {}
