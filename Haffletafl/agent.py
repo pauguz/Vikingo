@@ -22,6 +22,11 @@ class Agent:
                 self.selected = selection
                 self.valid_moves = self.board.get_valid_moves(self.selected)
 
+                if self.valid_moves == {}:
+                    self.selected = None
+                    return 'Agent: Piece can\'t move'
+                
+                self.selected = None
                 #print(f"Selected Piece({row},{col}) Content[{self.selected}]")
                 
                 return self.valid_moves
