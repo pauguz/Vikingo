@@ -18,7 +18,7 @@ class Agent:
         # select(row, col)
         if self.selected == None:
             selection = self.board.get_piece(row, col)
-            if selection != 0:
+            if selection != 0: # selection.team == self.turn
                 self.selected = selection
                 self.valid_moves = self.board.get_valid_moves(self.selected)
 
@@ -51,6 +51,14 @@ class Agent:
                 return 'Agent: unsuccessful: reset and reselect'
 
     def _move(self, row, col):
+        piece = self.board.get_piece(row, col)
+        if self.selected and piece == 0 and (row, col) in self.valid_moves:
+            self.board.move(self.selected, row, col)
+            skipped = self.valid_moves[(row, col)]
+            if skipped:
+                self.board.remove(skipped)
+        else:
+            return False
         
         return True
     
