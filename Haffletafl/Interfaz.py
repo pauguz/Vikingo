@@ -146,6 +146,7 @@ class vista:
             l=self.obtenerContNum(sel)
             destino=event.widget
             ub=self.ObtenerUbicación(destino)
+            self.agent.select(ub[0], ub[1])
             print("Destino: ", end=" ")
             print(ub)
             grf.restaurarMovimientos(self.labels, self.movimientos_graficados)

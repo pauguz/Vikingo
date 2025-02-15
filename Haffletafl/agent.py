@@ -16,9 +16,10 @@ class Agent:
 
     def select(self, row, col):#will determine wether or not we should move
         # select(row, col)
+        selection = None
         if self.selected == None:
             selection = self.board.get_piece(row, col)
-            if selection != 0: # selection.team == self.turn
+            if selection != 0 and selection.team == self.turn: # selection.team == self.turn
                 self.selected = selection
                 self.valid_moves = self.board.get_valid_moves(self.selected)
 
@@ -26,7 +27,6 @@ class Agent:
                     self.selected = None
                     return 'Agent: Piece can\'t move'
                 
-                self.selected = None
                 #print(f"Selected Piece({row},{col}) Content[{self.selected}]")
                 
                 return self.valid_moves
@@ -57,6 +57,7 @@ class Agent:
             skipped = self.valid_moves[(row, col)]
             if skipped:
                 self.board.remove(skipped)
+            self.change_turn()
         else:
             return False
         
