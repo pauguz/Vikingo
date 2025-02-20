@@ -63,11 +63,32 @@ class Agent:
         
         return True
     
+    def ia_move(self, team):
+        best_moves_for_pieces = {}
+
+        for piece in self.board.get_all_team_pieces(team):
+            possible_moves = self.board.get_valid_moves(piece)
+
+            moves_with_rewards = {
+                move[0]: sum(1 if skipped.team != team else -1 for skipped in move[1])
+                for move in possible_moves.items()
+            }
+
+            sorted_moves_by_reward = sorted(moves_with_rewards.items(), key=lambda item: item[1], reverse=True)
+
+            best_move_for_piece = next(iter(sorted_moves_by_reward), None)
+            if best_move_for_piece is not None:
+                best_moves_for_pieces[(piece.team, (piece.row, piece.col))] = best_move_for_piece
+
+        return next(iter(sorted(best_moves_for_pieces.items(), key=lambda item: item[1][1], reverse=True)), None)
+
     def change_turn(self):
         self.valid_moves = {}
         if self.turn == 'black':
             self.turn = 'white'
         else:
+            best_piece_move = self.ia_move('black')
+            print(f"Result Best piece move: {best_piece_move}")
             self.turn = 'black' 
         
     def setBoard(self, board, whites, blacks):

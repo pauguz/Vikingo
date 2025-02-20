@@ -16,7 +16,7 @@ class Board:
         pieces = []
         for row in self.board:
             for piece in row:
-                if piece != 0 and piece.team == team:
+                if piece != 0 and (piece.team in team):
                     pieces.append(piece)
         return pieces
 
