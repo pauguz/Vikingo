@@ -153,13 +153,40 @@ class vista:
         #comprobar si el movimiento es posible
             if(ub in self.movimientos_graficados):                 
             #Parte Mejorable//Vaciar label
-                self.turno+=1
-                self.turno%=2
-                self.labels[sel[0]][sel[1]]=grf.etiquetado(sel[0], sel[1], self.ventana, self.Seleccionar)
-                grf.asignarImagen(self.j, ub, self.labels, *l )
-                self.Pruebas(ub)
-                self.blanquear(l, ub)
-                print("----------------------------------------------------------------")
+                iaOn = True
+                if iaOn: 
+                    # Turn White
+                    self.labels[sel[0]][sel[1]]=grf.etiquetado(sel[0], sel[1], self.ventana, self.Seleccionar)
+                    grf.asignarImagen(self.j, ub, self.labels, *l )
+                    self.Pruebas(ub)
+                    self.blanquear(l, ub)
+                    print("----------------------------------------------------------------")
+                    # White movimiento exitoso.
+
+                    # Turn Black. IA moves
+                    best_piece_move = self.agent.ia_move('black') #(('black', (1, 5)), ((1, 9), 2))
+                    print(f"Black IA Move: {best_piece_move}")
+                    sel = best_piece_move[0][1] # inicio
+                    ub  = best_piece_move[1][0] # fin
+                    l   = [0]                   # team
+                    self.agent.select(sel[0], sel[1])
+                    self.agent.select(ub[0], ub[1])
+
+                    self.labels[sel[0]][sel[1]]=grf.etiquetado(sel[0], sel[1], self.ventana, self.Seleccionar)
+                    grf.asignarImagen(self.j, ub, self.labels, *l )
+                    self.Pruebas(ub)
+                    self.blanquear(l, ub)
+                    print("----------------------------------------------------------------")
+                    # Turn White. Choose Piece
+                
+                else:
+                    self.turno+=1
+                    self.turno%=2
+                    self.labels[sel[0]][sel[1]]=grf.etiquetado(sel[0], sel[1], self.ventana, self.Seleccionar)
+                    grf.asignarImagen(self.j, ub, self.labels, *l )
+                    self.Pruebas(ub)
+                    self.blanquear(l, ub)
+                    print("----------------------------------------------------------------")
 
 # Ejecutar el bucle principal de la aplicación
 jue=juego(11, None)
