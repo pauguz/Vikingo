@@ -74,9 +74,7 @@ class Agent:
                 for move in possible_moves.items()
             }
 
-            sorted_moves_by_reward = sorted(moves_with_rewards.items(), key=lambda item: item[1], reverse=True)
-            # best_piece_move = max(list_moves_rewarded.items(), key=lambda item: item[1], default=None)
-            best_move_for_piece = next(iter(sorted_moves_by_reward), None)
+            best_move_for_piece = max(moves_with_rewards.items(), key=lambda item: item[1], default=None)
             if best_move_for_piece is not None:
                 best_moves_for_pieces[(piece.team, (piece.row, piece.col))] = best_move_for_piece
 
