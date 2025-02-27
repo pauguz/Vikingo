@@ -104,10 +104,12 @@ class Agent:
             black_evaluation = len(move.get_all_team_pieces('black')) - len(move.get_all_team_pieces('white'))
 
             maxEval = max(black_evaluation, initial_evaluation)
+
+            initial_evaluation = maxEval
             if maxEval == black_evaluation:
                 best_move = move, piece, final_position
 
-            return best_move # move, piece, final_position
+        return best_move # move, piece, final_position
 
     def simulate_move(self, pice, move, board, skip):
         board.move(pice, move[0], move[1])
