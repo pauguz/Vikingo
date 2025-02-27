@@ -1,5 +1,6 @@
 import pygame
 from board import Board
+from copy import deepcopy
 
 class Agent:
     def __init__(self, team = 'white'):
@@ -94,6 +95,40 @@ class Agent:
         self.board.setBoard(board)
         self.board.setBlack(blacks)
         self.board.setWhite(whites)
+
+    def algo(self, initial_position):
+        best_move = None
+        maxEval = initial_evaluation = len(initial_position.get_all_team_pieces('black')) - len(initial_position.get_all_team_pieces('white'))
+
+        for move, piece, final_position in self.get_all_moves(initial_position, 'black'):
+            black_evaluation = len(move.get_all_team_pieces('black')) - len(move.get_all_team_pieces('white'))
+
+            maxEval = max(black_evaluation, initial_evaluation)
+            if maxEval == black_evaluation:
+                best_move = move, piece, final_position
+
+            return best_move # move, piece, final_position
+
+    def simulate_move(self, pice, move, board, skip):
+        board.move(pice, move[0], move[1])
+        if skip:
+            board.remove(skip)
+
+        return board
+
+    def get_all_moves(self, board, color):
+        moves = [] #[(board, initial_piece, final_position)]
+
+        for piece in board.get_all_team_pieces(color):
+            valid_moves = board.get_valid_moves(piece)
+            #(row, col): [pieces]
+            for move, skip in valid_moves.items():
+                temp_board = deepcopy(board)
+                temp_piece = temp_board.get_piece(piece.row, piece.col)
+                new_board = self.simulate_move(temp_piece, move, temp_board, skip)
+                moves.append((new_board, piece, move))
+
+        return moves
 
         
 
