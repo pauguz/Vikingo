@@ -129,7 +129,7 @@ class Agent:
                 temp_piece = temp_board.get_piece(piece.row, piece.col)
                 new_board = self.simulate_move(temp_piece, move, temp_board, skip)
                 moves.append((new_board, piece, move))
-
+        moves.reverse()
         return moves
 
         
