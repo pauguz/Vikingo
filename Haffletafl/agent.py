@@ -112,9 +112,9 @@ class Agent:
         return best_move # move, piece, final_position
 
     def simulate_move(self, pice, move, board, skip):
-        board.move(pice, move[0], move[1])
         if skip:
             board.remove(skip)
+        board.move(pice, move[0], move[1])
 
         return board
 
