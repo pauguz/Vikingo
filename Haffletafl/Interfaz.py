@@ -169,9 +169,9 @@ class vista:
                     # Turn Black. IA moves
                     best_piece_move = self.agent.ia_move('black') #(('black', (1, 5)), ((1, 9), 2))
                     print(f"Black IA Move: {best_piece_move}")
-                    sel = best_piece_move[0][1] # inicio
-                    ub  = best_piece_move[1][0] # fin
-                    l   = [0]                   # team
+                    sel = (piece.row, piece.col) # best_piece_move[0][1] # inicio
+                    ub  = final_position         # best_piece_move[1][0] # fin
+                    l   = [0]                    # team
                     self.agent.select(sel[0], sel[1])
                     self.agent.select(ub[0], ub[1])
 

@@ -100,7 +100,18 @@ class Agent:
         best_move = None
         maxEval = initial_evaluation = len(initial_position.get_all_team_pieces('black')) - len(initial_position.get_all_team_pieces('white'))
 
-        for move, piece, final_position in self.get_all_moves(initial_position, 'black'):
+        possible_moves_from_root = self.get_all_moves(initial_position, 'black')
+
+        moves_after_expansion =  [] # [(move, piece, final_position)]
+
+        for move, piece, final_position in possible_moves_from_root:
+            moves = self.get_all_moves(move, 'white')
+            for my_move, _ , my_final_position in moves:
+                moves_after_expansion.append((my_move, piece, final_position))
+
+        #Evaluation
+
+        for move, piece, final_position in moves_after_expansion:
             black_evaluation = len(move.get_all_team_pieces('black')) - len(move.get_all_team_pieces('white'))
 
             maxEval = max(black_evaluation, initial_evaluation)
@@ -124,7 +135,8 @@ class Agent:
         for piece in board.get_all_team_pieces(color):
             valid_moves = board.get_valid_moves(piece)
             #(row, col): [pieces]
-            for move, skip in valid_moves.items():
+            maximal_elimination_moves = sorted(valid_moves.items(), key=lambda item: len(item[1]), reverse=True)[:3]
+            for move, skip in maximal_elimination_moves:
                 temp_board = deepcopy(board)
                 temp_piece = temp_board.get_piece(piece.row, piece.col)
                 new_board = self.simulate_move(temp_piece, move, temp_board, skip)
