@@ -96,18 +96,30 @@ class Agent:
         self.board.setBlack(blacks)
         self.board.setWhite(whites)
 
+    def expand_initial_node_moves(self, initial_node, color):
+        
+        return self.get_all_moves(initial_node, color)
+
+    def expand_moves_for_nodes(self, initial_nodes, color):
+        moves_after_expansion =  [] # [(move, piece, final_position)]
+
+        for move, piece, final_position in initial_nodes:
+            moves = self.expand_initial_node_moves(move, color)
+            for my_move, _ , _ in moves:
+                moves_after_expansion.append((my_move, piece, final_position))
+
+        return moves_after_expansion
+
+
     def algo(self, initial_position):
         best_move = None
         maxEval = initial_evaluation = len(initial_position.get_all_team_pieces('black')) - len(initial_position.get_all_team_pieces('white'))
 
-        possible_moves_from_root = self.get_all_moves(initial_position, 'black')
+        possible_moves_from_root = self.expand_initial_node_moves(initial_position, 'black')
 
         moves_after_expansion =  [] # [(move, piece, final_position)]
 
-        for move, piece, final_position in possible_moves_from_root:
-            moves = self.get_all_moves(move, 'white')
-            for my_move, _ , my_final_position in moves:
-                moves_after_expansion.append((my_move, piece, final_position))
+        moves_after_expansion = self.expand_moves_for_nodes(possible_moves_from_root, 'white')
 
         #Evaluation
 
