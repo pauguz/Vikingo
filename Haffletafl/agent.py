@@ -110,6 +110,19 @@ class Agent:
 
         return moves_after_expansion
 
+    def evaluate_best_move(self, possible_moves):
+        best_move = None
+        max_eval = float('-inf')  # Initialize to negative infinity
+
+        for move, piece, final_state in possible_moves:
+            evaluation = len(move.get_all_team_pieces('black')) - len(move.get_all_team_pieces('white'))
+
+            max_eval = max(evaluation, max_eval)
+
+            if max_eval == evaluation:
+                best_move = move, piece, final_state
+
+        return best_move
 
     def algo(self, initial_position):
         best_move = None
@@ -123,14 +136,7 @@ class Agent:
 
         #Evaluation
 
-        for move, piece, final_position in moves_after_expansion:
-            black_evaluation = len(move.get_all_team_pieces('black')) - len(move.get_all_team_pieces('white'))
-
-            maxEval = max(black_evaluation, initial_evaluation)
-
-            initial_evaluation = maxEval
-            if maxEval == black_evaluation:
-                best_move = move, piece, final_position
+        best_move = self.evaluate_best_move(moves_after_expansion)
 
         return best_move # move, piece, final_position
 
