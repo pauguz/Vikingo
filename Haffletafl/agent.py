@@ -63,22 +63,6 @@ class Agent:
         
         return True
     
-    def ia_move(self, team):
-        best_moves_for_pieces = {}
-
-        for piece in self.board.get_all_team_pieces(team):
-            possible_moves = self.board.get_valid_moves(piece)
-
-            moves_with_rewards = {
-                move[0]: sum(1 if skipped.team != team else -1 for skipped in move[1])
-                for move in possible_moves.items()
-            }
-
-            best_move_for_piece = max(moves_with_rewards.items(), key=lambda item: item[1], default=None)
-            if best_move_for_piece is not None:
-                best_moves_for_pieces[(piece.team, (piece.row, piece.col))] = best_move_for_piece
-
-        return next(iter(sorted(best_moves_for_pieces.items(), key=lambda item: item[1][1], reverse=True)), None)
 
     def change_turn(self):
         self.valid_moves = {}
@@ -125,7 +109,6 @@ class Agent:
 
     def algo(self, initial_position):
         best_move = None
-        maxEval = initial_evaluation = len(initial_position.get_all_team_pieces('black')) - len(initial_position.get_all_team_pieces('white'))
 
         possible_moves_from_root = self.expand_initial_node_moves(initial_position, 'black')
 
@@ -139,7 +122,7 @@ class Agent:
 
         best_move = self.evaluate_best_move(moves_after_expansion)
 
-        return best_move # move, piece, final_position
+        return best_move # move, piece, 
 
     def simulate_move(self, pice, move, board, skip):
         if skip:

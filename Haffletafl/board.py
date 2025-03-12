@@ -9,7 +9,7 @@ COLS = 12
 class Board:
     def __init__(self):
         self.board = []
-        self.black_left = self.white_left = 12
+        self.black_left = self.white_left = 0
         self.black_kings = self.white_kings = 0
 
     def get_all_team_pieces(self, team):
