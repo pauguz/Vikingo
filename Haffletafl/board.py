@@ -3,12 +3,10 @@ from piece import Piece
 from collections import namedtuple
 Direction = namedtuple('Direction', ['x', 'y'])
 
-ROWS = 12
-COLS = 12
-
 class Board:
-    def __init__(self):
+    def __init__(self, dimension = 11):
         self.board = []
+        self.dimension = dimension
         self.black_left = self.white_left = 0
         self.black_kings = self.white_kings = 0
 
@@ -156,4 +154,4 @@ class Board:
 
     def is_out_of_bounds(self, position: tuple):
         # Assuming the board size is 11x11, adjusting the bounds check
-        return position[0] < 0 or position[0] >= 11 or position[1] < 0 or position[1] >= 11 
+        return position[0] < 0 or position[0] >= self.dimension or position[1] < 0 or position[1] >= self.dimension 
