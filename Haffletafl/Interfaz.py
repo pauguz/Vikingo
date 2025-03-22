@@ -164,7 +164,7 @@ class vista:
                     # White movimiento exitoso.
 
                     # Turn Black
-                    move, piece, final_position = self.agent.algo(self.agent.board) 
+                    move, piece, final_position = self.agent.algo(self.agent.board, (sel[0], sel[1]), (ub[0], ub[1])) 
                     print(f"Black IA Move DeepCopy: {(move, (piece.row, piece.col), final_position)}")
 
                     sel = (piece.row, piece.col) # inicio

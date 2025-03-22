@@ -13,6 +13,7 @@ class Agent:
         self.selected = None
         self.board = Board()
         self.valid_moves = {}
+        self.oppturn_moves = None
 
     def select(self, row, col):#will determine wether or not we should move
         # select(row, col)
@@ -83,13 +84,23 @@ class Agent:
         
         return self.get_all_moves(initial_node, color)
 
-    def expand_moves_for_nodes(self, initial_nodes, color):
+    def expand_moves_for_nodes(self, initial_nodes, color, startOppMoves=False):
         moves_after_expansion =  [] # [(move, piece, final_position)]
 
-        for move, piece, final_position in initial_nodes:
-            moves = self.expand_initial_node_moves(move, color)
-            for my_move, _ , _ in moves:
-                moves_after_expansion.append((my_move, piece, final_position))
+        if startOppMoves:
+            for move, piece, final_position, opp_piece, opp_final, nodes in initial_nodes:
+                moves = self.expand_initial_node_moves(move, color)
+                for my_move, _ , _ in moves:
+                    node = (my_move, piece, final_position, opp_piece, opp_final, [])
+                    nodes.append(node)
+                    moves_after_expansion.append(node)
+                self.oppturn_moves = initial_nodes
+
+        else:
+            for move, piece, final_position in initial_nodes:
+                moves = self.expand_initial_node_moves(move, color)
+                for my_move, opp_piece, opp_final in moves:
+                    moves_after_expansion.append((my_move, piece, final_position, opp_piece, opp_final, []))
 
         return moves_after_expansion
 
@@ -97,27 +108,35 @@ class Agent:
         best_move = None
         max_eval = float('-inf')  # Initialize to negative infinity
 
-        for move, piece, final_state in possible_moves:
+        for move_data in possible_moves:
+            move, piece, final_state, _, _, _ = move_data
             evaluation = len(move.get_all_team_pieces('black')) - len(move.get_all_team_pieces('white'))
 
             max_eval = max(evaluation, max_eval)
 
             if max_eval == evaluation:
-                best_move = move, piece, final_state
+                best_move = move_data
 
-        return best_move
+        move, piece, final_state, _, _, _ = best_move 
+        self.oppturn_moves = next(
+            (nodes for _, piece_, final_position, _, _, nodes in self.oppturn_moves 
+            if piece_ == piece and final_position == final_state), 
+            None
+        )
 
-    def algo(self, initial_position):
+        return move, piece, final_state
+
+    def algo(self, initial_position, final, initial):
+
         best_move = None
 
-        possible_moves_from_root = self.expand_initial_node_moves(initial_position, 'black')
+        possible_moves_from_root = self.expand_initial_node_moves(initial_position, 'black') # [(move, piece_b, final_position)]
 
-        moves_after_expansion =  [] # [(move, piece, final_position)]
+        moves_after_expansion =  [] 
 
-        moves_after_expansion = self.expand_moves_for_nodes(possible_moves_from_root, 'white')
-
-        moves_after_expansion = self.expand_moves_for_nodes(moves_after_expansion, 'black')
+        moves_after_expansion = self.expand_moves_for_nodes(possible_moves_from_root, 'white') # [(move, piece_b, final_position, opp, oppfinal, [])]
         
+        moves_after_expansion = self.expand_moves_for_nodes(moves_after_expansion, 'black', True) # [(move, piece_b, final_position, opp, oppfinal, [])]
         #Evaluation
 
         best_move = self.evaluate_best_move(moves_after_expansion)
