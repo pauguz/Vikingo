@@ -156,7 +156,11 @@ class Agent:
         for piece in board.get_all_team_pieces(color):
             valid_moves = board.get_valid_moves(piece)
             #(row, col): [pieces]
-            maximal_elimination_moves = sorted(valid_moves.items(), key=lambda item: len(item[1]), reverse=True)[:1]
+            maximal_elimination_moves = sorted(
+                valid_moves.items(),
+                key=lambda item: sum(-1 if piece.team == color else 1 for piece in item[1]),
+                reverse=True
+            )[:1]
             for move, skip in maximal_elimination_moves:
                 temp_board = deepcopy(board)
                 temp_piece = temp_board.get_piece(piece.row, piece.col)
