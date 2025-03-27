@@ -53,13 +53,13 @@ def graficar(j, labels):
 def graficarMovimientosPosibles(labels, movimientos):
     for mov in movimientos:
         fila, columna = mov
-        casilla = labels[fila][columna]
+        casilla = ubicar(labels, (fila, columna))
         casilla.config(bg='turquoise')
 
 def restaurarMovimientos(labels, movimientos):
     for mov in movimientos: #restaurar el estado original de las casillas con posibles movimientos
         fila, columna = mov
-        casilla = labels[fila][columna]
+        casilla = ubicar(labels, (fila, columna))
         casilla.config(bg="SystemButtonFace")
 
 def fin():
