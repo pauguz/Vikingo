@@ -1,105 +1,138 @@
 import tkinter as tk
 from Juego import juego
-from PIL import Image, ImageTk 
-from Bando import bando
-from matematiqueria import SumaDupla
-from itertools import chain
-
+import grafiqueria as grf
+import matematiqueria as mat
+from Bot import bot
 #array letras
 letras=list(['a','b','c','d','e','f','g','h','i','j','k'])
-def etiquetado(i:int, j:int, root, func):
-    label = tk.Label(root, width=4, height=2, relief="solid", borderwidth=3)
-    label.grid(row=i, column=j)
-    label.bind("<Button-1>", func)
-    return label
 
 def obtener_Contenido(lab: tk.Label):
     return list(map (int, lab.cget("text").split()))
 
+def ventor(v):
+ # Configurar el título de la ventana
+    v.title("Mi Ventana")
+# Configurar las dimensiones de la ventana
+    v.geometry("800x600")
+# Configurar el tamaño mínimo y máximo de la ventana para evitar deformación
+    v.minsize(800, 600)
+    v.maxsize(1200, 900) 
+    v.resizable(True, True)
+    v.config(bg="beige")
+
 class vista:
     seleccion=None  
-# Crear una instancia de la ventana
-    ventana = tk.Tk()
-# Configurar el título de la ventana
-    ventana.title("Mi Ventana")
-# Configurar las dimensiones de la ventana
-    ventana.geometry("800x600")
-# Configurar el tamaño mínimo y máximo de la ventana para evitar deformación
-    ventana.minsize(800, 600)
-    ventana.maxsize(1200, 900) 
-    ventana.resizable(True, True)
-    ventana.config(bg="beige")
-    pantalla=tk.Frame()
+    movimientos_graficados = []    
+    #pantalla=tk.Frame()
 
-    def __init__(self, jue:juego, turn=1):
+    def __init__(self, jue:juego, b=None):
+        self.ventana = tk.Toplevel()
+        ventor(self.ventana)
         self.j=jue
-        self.turno=turn
+        self.b=bool(b)
+        if(b):
+            self.bot=bot(self.j.dim, self.j.bandos, b)
+        self.Inicio()
+        self.llenar()
+        
+    def Inicio(self, event=None, t=1):
+        self.turno=t
+        self.labels=grf.etiquetados(self.ventana, self.Seleccionar, self.j.dim)
+        grf.graficar(self.j, self.labels)
+        
         
     def llenar(self):
-        dim=self.j.dim
-        self.labels=[[etiquetado(i,j,self.ventana, self.Seleccionar) for j in range(dim)] for i in range(dim)]
-        #version en varias lineas luego de declarar labels como lista de None's:
-        # for i in range(dim):
-        #    for j in range(dim):
-            # Crear y colocar la etiqueta en la ventana
-        #        label = tk.Label(self.ventana, width=4, height=2, relief="solid", borderwidth=1)
-        #        label.grid(row=i, column=j)
-        #        self.labels[i][j]=label
-        self.nuncio=tk.Label()
+        self.nuncio=tk.Label(self.ventana, width=8, height=2, borderwidth=1, relief="solid")
+        re = tk.Label(self.ventana, text=" RETVRN ", borderwidth=1, relief="solid")
+        re.place(x=self.j.dim*37.5, y=60)
+        re.bind("<Button-1>", self.Inicio )
+        self.nuncio.place(x=self.j.dim*37.5, y=6)
     
-    def ubicar(self, dup:tuple):
-        return self.labels[dup[0]][dup[1]]
+    def validar(self, dup):
+        d=self.j.dim
+        return dup[0]>=0 and dup[0]<d and dup[1]>=0 and dup[1]<d    
     
-#Las siguientes 3 funciones llenan las casillas con los iconos de la ficha, a nivel individual, de bando y de tablero respectivamente
-    
-    def asignarImagen(self, dup, num1:int, num2:int):
-        imago=None
-        if(num1==0):
-            imago=self.j.bandos[0].logo
-        elif(num2==0):
-            imago=self.j.bandos[1].imagen_real
-        else:
-            imago=self.j.bandos[1].logo
-    #Tomar el valor de la casilla
-        casilla=self.ubicar(dup)
-    #Ajustar tamaño de la imagen y su formato
-        #imago=imago.resize((casilla.winfo_width(),casilla.winfo_height()), Image.LANCZOS )
-        imago=imago.resize((30,30), Image.LANCZOS )
-        tkimago=ImageTk.PhotoImage(image=imago)
-    #Crear Texto identificador
-        t=str(num1)+" "+str(num2)
-    #Asignar Imagen y Texto
-        casilla.config(image=tkimago, text=t, width=30, height=32)
-        casilla.image=tkimago 
-        #casilla.grid(row=dup[0],column=dup[1])
-    #Reemplazar vieja casilla por la nueva
-        self.labels[dup[0]][dup[1]]=casilla
+    def obtenerContNum(self, dup:tuple):
+        if(self.validar(dup)):
+            return obtener_Contenido(mat.ubicar(self.labels, dup))
+        return [None]
         
-    def graficarBando(self, b:bando, num1:int):
-        l=b.miembros
-        logos=b.logo
-
-        for i in range(len(l)):
-            self.asignarImagen(l[i],num1, i)
+    #Devuelve verdadero si y solo si las dos duplas son coordenadas de casillas con fichas de distinto color o si hay una ficha y una direccion invalida
+    def Discriminante(self, dup1, dup2):
+        a=self.obtenerContNum(dup1)
+        if(not self.validar(dup2)):
+            return True
+        b=obtener_Contenido(mat.ubicar(self.labels, dup2))
+        if b and a:
+            return not a[0]==b[0]
+        else: return False
     
-    def graficar(self):
-        band=self.j.bandos
-        for i in range(len(band)):
-            self.graficarBando(band[i], i)
+    def Prueba(self,pos, eje, p=False, n=False):
+        if mat.Comprobar(pos, eje, self.Discriminante, p, n):
+            l=self.obtenerContNum(pos)
+            if l==[1, 0]:
+                self.j.Terminar(self.labels, 'NEGRAS')
+            self.labels[pos[0]][pos[1]]=grf.etiquetado(pos[0], pos[1], self.ventana, self.Seleccionar)
+            return True
+            
+    def Pruebas(self, pos):
+        if self.Prueba(pos, 0) or self.Prueba(pos, 1):
+            return
+        l=mat.direccionales
+        for i in l: 
+            for j in i:
+                c=mat.SumaDupla(j, pos)
+                if(self.validar(c)):
+                    self.Prueba(c, abs(j[1]))
 
 #Esta funcion devuelve la tupla con las 2 coordenadas de la casilla seleccionada
-    def ObtenerUbicación(self, label):
+    def ObtenerUbicación(self, label:tk.Label):
     # Get the grid info of the widget
         grid_info = label.grid_info()
-    
     # Extract the row and column from the grid info
         row = grid_info.get('row', None)  # Default to None if not found
         column = grid_info.get('column', None)  # Default to None if not found
-    
     # Return the position as a tuple
         return (row, column)
     
+    def JugadaBot(self):
+        k=self.bot.jugada()
+        self.movida(k[0], k[1], k[2])
 
+    def Terminar(self, st):
+        for i in self.labels:
+            for j in i:
+                j.unbind("<Button-1>")
+        grf.fin(st)
+
+    def blanquear(self, lis, destino):
+        #Codigo por si gana el blanco
+        comp=[self.j.dim-1, 0]
+        if(lis==[1, 0] and destino[0] in comp and destino[1] in comp):
+            self.Terminar('BLANCAS')
+        
+    def extraer(self):
+        d=self.j.dim
+        r=[]
+        for i in range(d):
+            f=[]
+            for j in range(d):
+                cont=self.obtenerContNum(i, j)
+                if(cont):
+                    f.append(cont)
+                    continue
+                f.append(None)
+            r.append(f)
+        return r
+                    
+
+    def movida(self, sel, ub, l):
+        #parte mejorable
+        self.labels[sel[0]][sel[1]]=grf.etiquetado(sel[0], sel[1], self.ventana, self.Seleccionar)
+        grf.asignarImagen(self.j, ub, self.labels, *l )
+        self.Pruebas(ub)
+        self.blanquear(l, ub)
+        print("----------------------------------------------------------------")
 
     def Seleccionar(self, event:tk.Event):
         #sel es None cuando se hace el primer clic y es una tupla cuando se hace el segundo
@@ -114,32 +147,31 @@ class vista:
                 print(l)
                 print("Inicio: ", end=" ")
                 print(self.seleccion)
-                self.turno+=1
-                self.turno=(self.turno)%2
+                self.movimientos_graficados = mat.MovimientosPosibles(self.seleccion, self.obtenerContNum)
+                movimientos = self.movimientos_graficados
+                grf.graficarMovimientosPosibles(self.labels, movimientos)
+                testBot = bot(self.j.dim, self.j.bandos, self.turno)
+                #testBot.obtenerMiBando(self.j.bandos)
+
         if(not boola and boolb):
-            t=self.seleccion
-            casSel=self.ubicar(t)
+        #inicio y destino guardados en variables
             self.seleccion=None
-            l=obtener_Contenido(casSel)
+            l=self.obtenerContNum(sel)
             destino=event.widget
             ub=self.ObtenerUbicación(destino)
-            print("Ubicacion: ", end=" ")
+            print("Destino: ", end=" ")
             print(ub)
+            grf.restaurarMovimientos(self.labels, self.movimientos_graficados)
         #comprobar si el movimiento es posible
-            #print(self.j.mover(l, self.ObtenerUbicación(destino)))
-            if(self.j.mover(l, self.ObtenerUbicación(destino))):                 
-                #Parte Mejorable//Vaciar lab
-                self.labels[t[0]][t[1]]=etiquetado(t[0], t[1], self.ventana, self.Seleccionar)
-                self.asignarImagen(ub, l[0], l[1] )
-                print("----------------------------------------------------------------")
-        
+            if(ub in self.movimientos_graficados):                 
+                self.movida( sel, ub, l)
+            #Cambiar Turno            
+                self.turno+=1
+                self.turno%=2
 
 
 # Ejecutar el bucle principal de la aplicación
-jue=juego(9, None)
-v=vista(jue)
-v.llenar()
-v.graficar()
-#v.labels[7][7].config(image=ImageTk.PhotoImage(image=Image.open("reg.png")) )
-v.ventana.mainloop()
-
+#jue=juego(15, None)
+#jue.dibujar()
+#v=vista(jue)
+#v.ventana.mainloop()

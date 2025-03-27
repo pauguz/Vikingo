@@ -29,16 +29,11 @@ for label in labels:
     label.grid(row=0, column=i)
     i+=1
 
-# Asignar la imagen al Label existente
+#Asignar la imagen al Label existente
 labels[0].config(image=tk_imgrey, text="1")
 labels[1].config(image=tk_imgb)
 labels[2].config(image=tk_imgn)
 
-
 # Ejecutar el bucle principal de la aplicación
-root.mainloop()
-#print(type(labels[0]))
-
-
-
-
+#root.mainloop()
+help(tk.Label())
