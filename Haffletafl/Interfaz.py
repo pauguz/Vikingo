@@ -164,22 +164,13 @@ class vista:
                     # White movimiento exitoso.
 
                     # Turn Black
-                    move, piece, final_position = self.agent.algo(self.agent.board, (sel[0], sel[1]), (ub[0], ub[1])) 
-                    print(f"Black IA Move DeepCopy: {(move, (piece.row, piece.col), final_position)}")
+                    # Find The Opp piece
 
-                    sel = (piece.row, piece.col) # inicio
-                    ub  = final_position         # fin
-                    l   = [0]                    # team
-                    self.agent.select(sel[0], sel[1])
-                    self.agent.select(ub[0], ub[1])
+                    self.opp_start_position = (sel[0], sel[1])
+                    self.opp_end_position = (ub[0], ub[1])
 
-                    self.labels[sel[0]][sel[1]]=grf.etiquetado(sel[0], sel[1], self.ventana, self.Seleccionar)
-                    grf.asignarImagen(self.j, ub, self.labels, *l )
-                    self.Pruebas(ub)
-                    self.blanquear(l, ub)
-                    print("----------------------------------------------------------------")
-                    # Turn White. Choose Piece
-                
+                    self.ventana.after(500, self.process_ai_move)
+                    
                 else:
                     self.turno+=1
                     self.turno%=2
@@ -188,6 +179,23 @@ class vista:
                     self.Pruebas(ub)
                     self.blanquear(l, ub)
                     print("----------------------------------------------------------------")
+
+    def process_ai_move(self):
+        move, piece, final_position = self.agent.algo(self.agent.board, self.opp_start_position, self.opp_end_position) 
+        print(f"Black IA Move DeepCopy: {(move, (piece.row, piece.col), final_position)}")
+
+        sel = (piece.row, piece.col) # inicio
+        ub  = final_position         # fin
+        l   = [0]                    # team
+        self.agent.select(sel[0], sel[1])
+        self.agent.select(ub[0], ub[1])
+
+        self.labels[sel[0]][sel[1]]=grf.etiquetado(sel[0], sel[1], self.ventana, self.Seleccionar)
+        grf.asignarImagen(self.j, ub, self.labels, *l )
+        self.Pruebas(ub)
+        self.blanquear(l, ub)
+        print("----------------------------------------------------------------")
+        # Turn White. Choose Piece
 
 # Ejecutar el bucle principal de la aplicación
 jue=juego(11, None)
