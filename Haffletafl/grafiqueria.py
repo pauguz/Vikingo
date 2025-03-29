@@ -12,6 +12,17 @@ def etiquetado(i:int, j:int, root, func):
 def etiquetados(v, func, d):
     return [[etiquetado(i,j, v, func) for j in range(d)] for i in range(d)]
 
+def ventor(v, tit):
+    # Configurar el título de la ventana
+    v.title(tit)
+# Configurar las dimensiones de la ventana
+    v.geometry("800x600")
+# Configurar el tamaño mínimo y máximo de la ventana para evitar deformación
+    v.minsize(800, 600)
+    v.maxsize(1200, 900) 
+    v.resizable(True, True)
+    v.config(bg="beige")
+
 #Las siguientes 3 funciones llenan las casillas con los iconos de la ficha, a nivel individual, de bando y de tablero respectivamente
 def asignarImagen(j, dup, labels, num1:int, num2:int=1):
     imago=None

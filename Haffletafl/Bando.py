@@ -4,6 +4,7 @@ from PIL import Image, ImageTk
 class bando:
     def __init__(self, lis:list):
         self.miembros=lis
+        self.logo=None
         
     def setsoldado(self, imagen):
         self.logo=Image.open(imagen)
@@ -12,7 +13,7 @@ class bando:
         self.imagen_real=Image.open(imagen)
 
     def capturar(self, n:int):
-        self.miembros[n]=None
+        self.miembros.pop(n)
 
     
  

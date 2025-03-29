@@ -16,7 +16,6 @@ class bot:
         for dup in duplas:
             if dupla == dup:
                 return True
-        
         return False
 
 
