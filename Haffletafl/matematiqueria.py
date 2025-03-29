@@ -42,6 +42,10 @@ def MultDupla(dup:tuple, f:float):
     return tuple( int(x*f) for x in dup)
 
 @staticmethod
+def RestDupla(dup1: tuple, dup2:tuple):
+    return SumaDupla(dup1, MultDupla(dup2, -1))
+
+@staticmethod
 def getPaso(dup1:tuple, dup2:tuple):
     paso= SumaDupla( MultDupla(dup1, -1), dup2 )
     a=(paso[0]==0) or (paso[1]==0)
@@ -111,3 +115,24 @@ def MenorHuida(dup, dim):
     a=min(dup[0], dim-dup[0])
     b=min(dup[1], dim-dup[1])
     return a+b
+
+@staticmethod
+def validar(dup, n):
+    return dup[0]<n and dup[0]>=0 and dup[1]<n and dup[1]>=0
+
+@staticmethod
+def capturaEuro(matriz:list, dup, drec):
+    l=matriz.__len__()
+
+def Discriminante(matriz, dup1, dup2):
+        a=ubicar(matriz, dup1) 
+        if(not validar(dup2)):
+            return False # si esto es true se acorrala contra el borde
+        b=ubicar(matriz, dup2)
+        if b and a:
+            return not a[0]==b[0]
+        else: return False
+
+
+
+    
