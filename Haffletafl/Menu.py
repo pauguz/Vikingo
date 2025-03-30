@@ -27,7 +27,7 @@ class menu:
             j.dibujar()
             vent=vista(j)
             vent.llenar()
-            vent.graficar()
+            vent.Inicio()
             vent.ventana.mainloop()
 m=menu()
 m.v.mainloop()

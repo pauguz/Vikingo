@@ -125,11 +125,17 @@ def validar(dup, n):
 def Discriminante(matriz:list, dup1, dup2, l):
         a=ubicar(matriz, dup1) 
         if(not validar(dup2,l)):
+            print("no vale")
             return False # si esto es true se acorrala contra el borde
         b=ubicar(matriz, dup2)
         if b and a:
-            return not a[0]==b[0]
-        else: return False
+            print("h")
+            return a[0]!=b[0]
+        print("primera casilla: ")
+        print(a)
+        print("segunda casilla: ")
+        print(b)
+        return False
 
 @staticmethod
 def DiscDirecta(matriz, dup, drec, l):
@@ -138,14 +144,16 @@ def DiscDirecta(matriz, dup, drec, l):
 @staticmethod
 def DiscDoble(matriz, dup, drec, l):
     if(DiscDirecta(matriz, dup, drec, l)):
+        print("tr")
         return DiscDirecta(matriz, SumaDupla(dup, drec), drec, l)
     return False
 
 @staticmethod
-def capturaEuro(matriz:list, dup, drec, capt): #usa esto en combinacion con las funciones para quitar la ficha capturada
+def capturaEuro(matriz:list, dup,capt): #usa esto en combinacion con las funciones para quitar la ficha capturada
     dir=direccionales[0]+direccionales[1]
     l=matriz.__len__()
     for i in dir:
-        if not(i==drec):
-            if(DiscDoble(matriz, dup, i, l) ):
-                capt(SumaDupla(dup, i))
+        if(DiscDoble(matriz, dup, i, l) ):
+            print("capturado")
+            capt(SumaDupla(dup, i))
+# mejorable, hace 4 iteraciones cuando podrian ser 3

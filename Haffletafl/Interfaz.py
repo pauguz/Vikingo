@@ -49,31 +49,17 @@ class vista:
         return [None]
     
     #Funciones para el movimiento -------------------------------------------------------------------------------------------
-    def Discriminante(self, dup1, dup2):
-        a=self.obtenerContNum(dup1)
-        if(not self.validar(dup2)):
-            return False # si esto es true se acorrala contra el borde
-        b=obtener_Contenido(mat.ubicar(self.labels, dup2))
-        if b and a:
-            return not a[0]==b[0]
-        else: return False
     
-    def Prueba(self,pos, eje, p=False, n=False):
-        if mat.Comprobar(pos, eje, self.Discriminante, p, n):
-            l=self.obtenerContNum(pos)
-            if l==[1, 0]:
-                grf.fin('NEGRAS')
-                self.liberar(self.labels)
-            self.labels[pos[0]][pos[1]]=grf.etiquetado(pos[0], pos[1], self.ventana, self.Seleccionar)
-            return True
-            
+    def captura(self, p):
+        self.j.captura(p)
+        self.labels[p[0]][p[1]]=grf.etiquetado(p[0], p[1], self.ventana, self.Seleccionar)
+        l=self.obtenerContNum(p)
+        if l==[1, 0]:
+            grf.fin('NEGRAS')
+            self.liberar(self.labels)
+
     def Pruebas(self, p):
-        l=mat.direccionales
-        for i in l: 
-            for j in i:
-                c=mat.SumaDupla(j, p)
-                if(self.validar(c)):
-                    self.Prueba(c, abs(j[1]))
+        mat.capturaEuro(self.j.posiciones, p, self.captura)
     #-------------------------------------------------------------------------
     
     def liberar(labels):
@@ -129,16 +115,16 @@ class vista:
                 #Parte Mejorable//Vaciar lab
                 self.labels[t[0]][t[1]]=etiquetado(t[0], t[1], self.ventana, self.Seleccionar)
                 grf.asignarImagen(self.j, ub, self.labels, *l)
+                self.j.mover( t, ub)
                 self.Pruebas(ub)
                 self.blanquear(l, ub)
-                self.j.mover( t, ub)
-                #for i in self.j.posiciones:
-                #    print(i)
+                for i in self.j.posiciones:
+                    print(i)
                 print("----------------------------------------------------------------")
             grf.restaurarMovimientos(self.labels, self.movspos)
 
 # Ejecutar el bucle principal de la aplicación
-jue=juego(11, None)
+jue=juego(9, None)
 jue.dibujar()
 v=vista(jue)
 v.ventana.mainloop()

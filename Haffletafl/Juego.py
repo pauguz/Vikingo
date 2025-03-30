@@ -23,7 +23,7 @@ class juego:
     def mover(self, inic, dest):
         val=mat.ubicar(self.posiciones, inic)
         self.posiciones[dest[0]][dest[1]]=val
-        self.posiciones[inic[0]][inic[1]]=val
+        self.posiciones[inic[0]][inic[1]]=None
 
     def dibujar(self):
         self.bandos[0].setsoldado("vikingonegro.png")
