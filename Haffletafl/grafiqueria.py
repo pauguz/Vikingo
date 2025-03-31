@@ -15,9 +15,9 @@ def etiquetados(v, func, d):
 def ventor(v, tit):
     # Configurar el título de la ventana
     v.title(tit)
-# Configurar las dimensiones de la ventana
+    # Configurar las dimensiones de la ventana
     v.geometry("800x600")
-# Configurar el tamaño mínimo y máximo de la ventana para evitar deformación
+    # Configurar el tamaño mínimo y máximo de la ventana para evitar deformación
     v.minsize(800, 600)
     v.maxsize(1200, 900) 
     v.resizable(True, True)
@@ -70,6 +70,15 @@ def restaurarMovimientos(labels, movs):
         casilla = labels[fila][columna]
         casilla.config(bg="SystemButtonFace")
 
+#Esta funcion devuelve la tupla con las 2 coordenadas de la casilla seleccionada
+def ObtenerUbicación(label:tk.Label):
+    # Get the grid info of the widget
+    grid_info = label.grid_info()
+    row = grid_info.get('row', None)  # Default to None if not found
+    column = grid_info.get('column', None)  # Default to None if not found
+    return (row, column)
+
+
 def fin():
         fin=tk.Toplevel()
         fin.title("Fin del Juego")
@@ -78,3 +87,8 @@ def fin():
         label = tk.Label(fin, text=st, bg="lightgreen", font=("Helvetica", 16))
         label.pack(fill=tk.BOTH, expand=True)
         fin.mainloop()
+
+def liberar(labels):
+    for i in labels:
+        for j in i:
+            j.unbind("<Button-1>") 

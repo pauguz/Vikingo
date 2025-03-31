@@ -10,19 +10,19 @@ class menu:
     dim=tk.Entry(v)
     dim.place(x=150, y=60)
     
-    def __init__(self):
-        txt=tk.Label(self.v, text='Ingrese la dimension del Tablero (Numero impar mayor que 9)')
+    def __init__(s):
+        txt=tk.Label(s.v, text='Ingrese la dimension del Tablero (Numero impar mayor que 9)')
         txt.place(x=60, y=40)
         
-        self.bot=tk.Label(self.v, text='Inicio', relief='solid' )
-        self.bot.bind("<Button-1>", self.dimendir)
-        self.bot.place(x=155, y=80)
+        s.bot=tk.Label(s.v, text='Inicio', relief='solid' )
+        s.bot.bind("<Button-1>", s.dimendir)
+        s.bot.place(x=155, y=80)
     
-    def dimendir(self):
+    def dimendir(self, event=None):
         d=self.dim.get()
         print(Dimendor(d))
         if (Dimendor(d)):
-            #self.dim.delete(0, tk.END)  
+            self.dim.delete(0, tk.END)  
             j=juego(int(d), None)
             j.dibujar()
             vent=vista(j)

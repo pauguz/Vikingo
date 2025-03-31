@@ -45,6 +45,9 @@ def MultDupla(dup:tuple, f:float):
 def RestDupla(dup1: tuple, dup2:tuple):
     return SumaDupla(dup1, MultDupla(dup2, -1))
 
+def MultDuplaT(dup:tuple, t):
+    pass
+
 @staticmethod
 def getPaso(dup1:tuple, dup2:tuple):
     paso= SumaDupla( MultDupla(dup1, -1), dup2 )
@@ -124,10 +127,14 @@ def validar(dup, n):
 @staticmethod
 def Discriminante(matriz:list, dup1, dup2, l):
         a=ubicar(matriz, dup1) 
+        b=0
         if(not validar(dup2,l)):
             print("no vale")
             return False # si esto es true se acorrala contra el borde
-        b=ubicar(matriz, dup2)
+        l-=1
+        if(dup2[0]%l + dup2[1]%l == 0):
+            b=[1]
+        else: b=ubicar(matriz, dup2)
         if b and a:
             print("h")
             return a[0]!=b[0]
