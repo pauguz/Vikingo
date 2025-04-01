@@ -70,6 +70,22 @@ class vista:
             grf.fin('BLANCAS')
             grf.liberar(s.labels)
     
+    def proceso():
+        pass
+    
+    def AI(s):
+        mov=s.proceso() #0 = inic 1=dest
+        
+
+    def jugada(s, ub, l, t):
+            s.tornar()           
+            #Parte Mejorable//Vaciar lab
+            s.labels[t[0]][t[1]]=etiquetado(t[0], t[1], s.ventana, s.Seleccionar)
+            grf.asignarImagen(s.j, ub, s.labels, *l)
+            s.j.mover( t, ub)
+            s.Pruebas(ub)
+            s.blanquear(l, ub)
+    
 
     def Seleccionar(s, event:tk.Event):
         #sel es None cuando se hace el primer clic y es una tupla cuando se hace el segundo
@@ -98,13 +114,7 @@ class vista:
             print(ub)
         #comprobar si el movimiento es posible
             if( ub in s.movspos ): 
-                s.tornar()           
-                #Parte Mejorable//Vaciar lab
-                s.labels[t[0]][t[1]]=etiquetado(t[0], t[1], s.ventana, s.Seleccionar)
-                grf.asignarImagen(s.j, ub, s.labels, *l)
-                s.j.mover( t, ub)
-                s.Pruebas(ub)
-                s.blanquear(l, ub)
+                s.jugada(ub, l, t)
                 #for i in self.j.posiciones:
                 #    print(i)
                 print("----------------------------------------------------------------")

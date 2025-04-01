@@ -18,11 +18,11 @@ class menu:
         s.bot.bind("<Button-1>", s.dimendir)
         s.bot.place(x=155, y=80)
     
-    def dimendir(self, event=None):
-        d=self.dim.get()
+    def dimendir(s, event=None):
+        d=s.dim.get()
         print(Dimendor(d))
         if (Dimendor(d)):
-            self.dim.delete(0, tk.END)  
+            s.dim.delete(0, tk.END)  
             j=juego(int(d), None)
             j.dibujar()
             vent=vista(j)

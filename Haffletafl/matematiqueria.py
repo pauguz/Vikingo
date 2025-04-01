@@ -129,7 +129,6 @@ def Discriminante(matriz:list, dup1, dup2, l):
         a=ubicar(matriz, dup1) 
         b=0
         if(not validar(dup2,l)):
-            print("no vale")
             return False # si esto es true se acorrala contra el borde
         l-=1
         if(dup2[0]%l + dup2[1]%l == 0):
@@ -138,10 +137,6 @@ def Discriminante(matriz:list, dup1, dup2, l):
         if b and a:
             print("h")
             return a[0]!=b[0]
-        print("primera casilla: ")
-        print(a)
-        print("segunda casilla: ")
-        print(b)
         return False
 
 @staticmethod
