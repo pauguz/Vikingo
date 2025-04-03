@@ -121,6 +121,20 @@ class vista:
         if(lis==[1, 0] and destino[0] in comp and destino[1] in comp):
             self.Terminar('BLANCAS')
 
+    def deshabilitar_interaccion(self):
+        # Deshabilitar la interacción del jugador
+        for i in range(self.j.dim):
+            for j in range(self.j.dim):
+                self.labels[i][j].unbind("<Button-1>")  # Desvincula el evento de clic
+
+    def habilitar_interaccion(self):
+        # Habilitar la interacción del jugador
+        for i in range(self.j.dim):
+            for j in range(self.j.dim):
+                
+                self.labels[i][j].bind("<Button-1>", self.Seleccionar)  # Vuelve a vincular el evento de clic
+
+
     def Seleccionar(self, event:tk.Event):
         #sel es None cuando se hace el primer clic y es una tupla cuando se hace el segundo
         sel=self.seleccion
@@ -156,6 +170,7 @@ class vista:
                 iaOn = True
                 if iaOn: 
                     # Turn White
+                    self.deshabilitar_interaccion()
                     self.labels[sel[0]][sel[1]]=grf.etiquetado(sel[0], sel[1], self.ventana, self.Seleccionar)
                     grf.asignarImagen(self.j, ub, self.labels, *l )
                     self.Pruebas(ub)
@@ -168,7 +183,8 @@ class vista:
 
                     self.opp_start_position = (sel[0], sel[1])
                     self.opp_end_position = (ub[0], ub[1])
-
+                    
+                    
                     self.ventana.after(500, self.process_ai_move)
                     
                 else:
@@ -195,6 +211,8 @@ class vista:
         self.Pruebas(ub)
         self.blanquear(l, ub)
         print("----------------------------------------------------------------")
+
+        self.habilitar_interaccion()
         # Turn White. Choose Piece
 
 # Ejecutar el bucle principal de la aplicación
