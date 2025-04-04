@@ -90,16 +90,16 @@ class Agent:
         if startOppMoves:
             for move, piece, final_position, opp_piece, opp_final, nodes in initial_nodes:
                 moves = self.expand_initial_node_moves(move, color)
-                for my_move, _ , _ in moves:
+                for my_move, _ , _, _, _, _ in moves:
                     node = (my_move, piece, final_position, opp_piece, opp_final, [])
                     nodes.append(node)
                     moves_after_expansion.append(node)
                 self.oppturn_moves = initial_nodes
 
         else:
-            for move, piece, final_position in initial_nodes:
+            for move, piece, final_position, _, _, nodes in initial_nodes:
                 moves = self.expand_initial_node_moves(move, color)
-                for my_move, opp_piece, opp_final in moves:
+                for my_move, opp_piece, opp_final, _, _, _ in moves:
                     moves_after_expansion.append((my_move, piece, final_position, opp_piece, opp_final, []))
 
         return moves_after_expansion
@@ -165,7 +165,7 @@ class Agent:
                 temp_board = deepcopy(board)
                 temp_piece = temp_board.get_piece(piece.row, piece.col)
                 new_board = self.simulate_move(temp_piece, move, temp_board, skip)
-                moves.append((new_board, piece, move))
+                moves.append((new_board, piece, move, None, None, []))
         moves.reverse()
         return moves
 
