@@ -118,19 +118,24 @@ class Agent:
                 best_move = move_data
 
         move, piece, final_state, _, _, _ = best_move 
-        self.oppturn_moves = next(
-            (nodes for _, piece_, final_position, _, _, nodes in self.oppturn_moves 
-            if piece_ == piece and final_position == final_state), 
-            None
-        )
 
         return move, piece, final_state
 
-    def algo(self, initial_position, final, initial):
+    def algo(self, initial_position, opp_start, opp_final):
+
+        if self.oppturn_moves is not None:
+            possible_moves_from_root = next(
+                (nodes for _, _, _, piece_, final_position, nodes in self.oppturn_moves 
+                if (piece_.row, piece_.col) == opp_start and final_position == opp_final), 
+                None
+            )
+
+            self.oppturn_moves = None
+
 
         best_move = None
 
-        possible_moves_from_root = self.expand_initial_node_moves(initial_position, 'black') # [(move, piece_b, final_position)]
+        possible_moves_from_root = self.expand_initial_node_moves(initial_position, 'black') # [(move, piece_b, final_position, None, None, [])]
 
         moves_after_expansion =  [] 
 
