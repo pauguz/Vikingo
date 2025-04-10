@@ -135,7 +135,7 @@ class Agent:
 
         best_move = None
 
-        possible_moves_from_root = self.expand_initial_node_moves(initial_position, 'black') # [(move, piece_b, final_position, None, None, [])]
+        possible_moves_from_root = self.expand_initial_node_moves(initial_position, 'black') if possible_moves_from_root is not None or self.oppturn_moves is None else None  # [(move, piece_b, final_position, None, None, [])]
 
         moves_after_expansion =  [] 
 
