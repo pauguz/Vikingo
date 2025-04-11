@@ -58,10 +58,10 @@ class Board:
     def get_valid_moves(self, piece):
         moves = {}#store the move, (4, 5): [(3,4)] and we have to remove that piece(3,4)
         directions = [
-            Direction(1, 0),   # West
-            Direction(-1, 0),  # East
-            Direction(0, 1),   # North
-            Direction(0, -1)   # South
+            Direction(1, 0),   # North
+            Direction(-1, 0),  # South
+            Direction(0, 1),   # West
+            Direction(0, -1)   # East
         ] 
 
         position_start = (piece.row, piece.col)
