@@ -165,7 +165,19 @@ class Agent:
                 valid_moves.items(),
                 key=lambda item: sum(-1 if piece.team == color else 1 for piece in item[1]),
                 reverse=True
-            )[:1]
+            )
+            result = []
+            
+            for tupla in maximal_elimination_moves:
+                skipped = tupla[1]
+                if skipped and all(skipped_piece.team != piece.team for skipped_piece in skipped):
+                    result.append(tupla)
+            if not result:
+                maximal_elimination_moves = maximal_elimination_moves[:1]
+            else:
+                maximal_elimination_moves = result
+
+
             for move, skip in maximal_elimination_moves:
                 temp_board = deepcopy(board)
                 temp_piece = temp_board.get_piece(piece.row, piece.col)
