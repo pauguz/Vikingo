@@ -130,7 +130,6 @@ class Agent:
                 None
             )
 
-            self.oppturn_moves = None
 
 
         best_move = None
@@ -157,21 +156,15 @@ class Agent:
 
     def get_all_moves(self, board, color):
         moves = [] #[(board, initial_piece, final_position)]
-
+        
         for piece in board.get_all_team_pieces(color):
-            valid_moves = board.get_valid_moves(piece)
-            #(row, col): [pieces]
-            maximal_elimination_moves = sorted(
-                valid_moves.items(),
-                key=lambda item: sum(-1 if piece.team == color else 1 for piece in item[1]),
-                reverse=True
-            )
+            valid_moves = board.get_valid_moves(piece) #{(row, col): [pieces]}
             result = []
             
-            for tupla in maximal_elimination_moves:
-                skipped = tupla[1]
+            for item in valid_moves.items(): #((row, col): [pieces])
+                skipped = item[1]
                 if skipped and all(skipped_piece.team != piece.team for skipped_piece in skipped):
-                    result.append(tupla)
+                    result.append(item)
             if not result:
                 maximal_elimination_moves = maximal_elimination_moves[:1]
             else:
