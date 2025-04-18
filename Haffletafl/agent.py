@@ -160,13 +160,14 @@ class Agent:
         for piece in board.get_all_team_pieces(color):
             valid_moves = board.get_valid_moves(piece) #{(row, col): [pieces]}
             result = []
+            maximal_elimination_moves = []
             
             for item in valid_moves.items(): #((row, col): [pieces])
                 skipped = item[1]
                 if skipped and all(skipped_piece.team != piece.team for skipped_piece in skipped):
                     result.append(item)
             if not result:
-                maximal_elimination_moves = maximal_elimination_moves[:1]
+                maximal_elimination_moves = [item for item in valid_moves.items()][:1]
             else:
                 maximal_elimination_moves = result
 
