@@ -80,31 +80,45 @@ class Agent:
         self.board.setBlack(blacks)
         self.board.setWhite(whites)
 
-    def expand_initial_node_moves(self, initial_node, color):
-        
-        return self.get_all_moves(initial_node, color)
+    def expand_initial_node_moves(self, initial_nodes, color, minmax):
+        nodes = self.get_all_moves(initial_nodes, color)
+        for node in nodes:
+            new_board, _, _, _, _, _ = node
+            minmax[new_board] = {"node": node, "cost" : self.cost(new_board), "nodes": {}}
+        return nodes
 
-    def expand_moves_for_nodes(self, initial_nodes, color, startOppMoves=False):
+    def expand_moves_for_nodes(self, initial_nodes, color, minmax, startOppMoves=False):
         moves_after_expansion =  [] # [(move, piece, final_position)]
 
         if startOppMoves:
             for move, piece, final_position, opp_piece, opp_final, nodes in initial_nodes:
-                moves = self.expand_initial_node_moves(move, color)
-                for my_move, _ , _, _, _, _ in moves:
+                parent_data = minmax[move]
+
+                moves = self.get_all_moves(move, color)
+                for node_data in moves:
+                    my_move, _ , _, _, _, _ = node_data
                     node = (my_move, piece, final_position, opp_piece, opp_final, [])
                     nodes.append(node)
+                    parent_data["nodes"][my_move] = {"node": node, "cost" : self.cost(my_move), "nodes": {}}
                     moves_after_expansion.append(node)
                 self.oppturn_moves = initial_nodes
 
         else:
-            for move, piece, final_position, _, _, nodes in initial_nodes:
-                moves = self.expand_initial_node_moves(move, color)
+            for node_data in initial_nodes:
+                move, piece, final_position, _, _, nodes = node_data
+                parent_data = minmax[move]
+                moves = self.get_all_moves(move, color)
                 for my_move, opp_piece, opp_final, _, _, _ in moves:
-                    moves_after_expansion.append((my_move, piece, final_position, opp_piece, opp_final, []))
+                    node_expand = (my_move, piece, final_position, opp_piece, opp_final, [])
+                    parent_data["nodes"][my_move] = {"node": node_expand, "cost" : self.cost(my_move) * -1 , "nodes": {}}
+                    moves_after_expansion.append(node_expand)
 
         return moves_after_expansion
 
-    def evaluate_best_move(self, possible_moves):
+    def cost(self, board):
+        return len(board.get_all_team_pieces('black')) - len(board.get_all_team_pieces('white'))
+
+    def evaluate_best_move(self, possible_moves, minmax):
         best_move = None
         max_eval = float('-inf')  # Initialize to negative infinity
 
@@ -123,6 +137,10 @@ class Agent:
 
     def algo(self, initial_position, opp_start, opp_final):
 
+        best_move = None
+        moves_after_expansion =  [] 
+        minmax = {}
+
         if self.oppturn_moves is not None:
             possible_moves_from_root = next(
                 (nodes for _, _, _, piece_, final_position, nodes in self.oppturn_moves 
@@ -130,20 +148,19 @@ class Agent:
                 None
             )
 
+        possible_moves_from_root = self.expand_initial_node_moves(initial_position, 'black', minmax) # [(move, piece_b, final_position, None, None, [])]
 
+        moves_after_expansion = self.expand_moves_for_nodes(possible_moves_from_root, 'white', minmax) # [(move, piece_b, final_position, opp, oppfinal, [])]
 
-        best_move = None
-
-        possible_moves_from_root = self.expand_initial_node_moves(initial_position, 'black') if possible_moves_from_root is not None or self.oppturn_moves is None else None  # [(move, piece_b, final_position, None, None, [])]
-
-        moves_after_expansion =  [] 
-
-        moves_after_expansion = self.expand_moves_for_nodes(possible_moves_from_root, 'white') # [(move, piece_b, final_position, opp, oppfinal, [])]
-        
-        moves_after_expansion = self.expand_moves_for_nodes(moves_after_expansion, 'black', True) # [(move, piece_b, final_position, opp, oppfinal, [])]
+        finish = {
+            move: data
+            for value in minmax.values()
+            for move, data in value['nodes'].items()
+        }
+        moves_after_expansion = self.expand_moves_for_nodes(moves_after_expansion, 'black', finish , True) # [(move, piece_b, final_position, opp, oppfinal, [])]
         #Evaluation
 
-        best_move = self.evaluate_best_move(moves_after_expansion)
+        best_move = self.evaluate_best_move(moves_after_expansion, minmax)
 
         return best_move # move, piece, 
 
