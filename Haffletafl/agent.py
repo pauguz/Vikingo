@@ -119,6 +119,17 @@ class Agent:
         return len(board.get_all_team_pieces('black')) - len(board.get_all_team_pieces('white'))
 
     def evaluate_best_move(self, possible_moves, minmax):
+        first_max_ev = float('-inf')
+        first_player_best_move = None
+
+        for value in minmax.values():
+            first_cost = value['cost']
+            first_max_ev = max(first_cost, first_max_ev)
+
+            if first_max_ev == first_cost:
+                first_player_best_move = value['node']
+
+        
         best_move = None
         max_eval = float('-inf')  # Initialize to negative infinity
 
@@ -133,7 +144,7 @@ class Agent:
 
         move, piece, final_state, _, _, _ = best_move 
 
-        return move, piece, final_state
+        return first_player_best_move[0], first_player_best_move[1], first_player_best_move[2]
 
     def algo(self, initial_position, opp_start, opp_final):
 
