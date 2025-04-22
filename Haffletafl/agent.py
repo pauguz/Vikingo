@@ -119,12 +119,28 @@ class Agent:
         return len(board.get_all_team_pieces('black')) - len(board.get_all_team_pieces('white'))
 
     def evaluate_best_move(self, possible_moves, minmax):
+        # node = (node's_board, piece, final_position, opp_piece, opp_final, [])
+        # minmax = { node's_board: {"node": node, "cost" : self.cost(node's_board), "nodes": {}}}
+        # minmax[node's_board] = {"node": node, "cost" : self.cost(node's_board), "nodes": {}}
+        # "nodes" = another_minmax
         first_max_ev = float('-inf')
         first_player_best_move = None
 
         for value in minmax.values():
             first_cost = value['cost']
             first_max_ev = max(first_cost, first_max_ev)
+
+            second_minmax = value['nodes']
+            second_max_ev = float('-inf')
+            second_player_best_move = None
+
+            for value in second_minmax.values():
+                second_cost = value['cost']
+                second_max_ev = max(second_cost, second_max_ev)
+
+                if second_max_ev == second_cost:
+                    second_player_best_move = value['node']
+
 
             if first_max_ev == first_cost:
                 first_player_best_move = value['node']
