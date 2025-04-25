@@ -128,7 +128,6 @@ class Agent:
 
         for value in minmax.values():
             first_cost = value['cost']
-            first_max_ev = max(first_cost, first_max_ev)
 
             second_minmax = value['nodes']
             second_max_ev = float('-inf')
@@ -141,8 +140,11 @@ class Agent:
                 if second_max_ev == second_cost:
                     second_player_best_move = value['node']
 
+            total_second_max_ev = first_cost + second_max_ev
 
-            if first_max_ev == first_cost:
+            first_max_ev = max(total_second_max_ev, first_max_ev)
+
+            if first_max_ev == total_second_max_ev:
                 first_player_best_move = value['node']
 
         
