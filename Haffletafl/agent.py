@@ -149,9 +149,11 @@ class Agent:
                     if third_max_ev == third_cost:
                         third_player_best_move = value['node']
 
-                second_max_ev = max(second_cost, second_max_ev)
+                total_third_max_ev = second_cost + third_max_ev    
 
-                if second_max_ev == second_cost:
+                second_max_ev = max(total_third_max_ev, second_max_ev)
+
+                if second_max_ev == total_third_max_ev:
                     second_player_best_move = value['node']
 
             total_second_max_ev = first_cost + second_max_ev
