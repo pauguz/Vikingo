@@ -155,3 +155,26 @@ class Board:
     def is_out_of_bounds(self, position: tuple):
         # Assuming the board size is 11x11, adjusting the bounds check
         return position[0] < 0 or position[0] >= self.dimension or position[1] < 0 or position[1] >= self.dimension 
+    
+    def __eq__(self, other):
+        return (
+            isinstance(other, Board)
+            and self.dimension == other.dimension
+            and self.board == other.board
+            and self.black_left == other.black_left
+            and self.white_left == other.white_left
+            and self.black_kings == other.black_kings
+            and self.white_kings == other.white_kings
+        )
+
+    def __hash__(self):
+        # Convert mutable board to immutable tuple of tuples for hashing
+        board_state = tuple(tuple(cell for cell in row) for row in self.board)
+        return hash((
+            board_state,
+            self.dimension,
+            self.black_left,
+            self.white_left,
+            self.black_kings,
+            self.white_kings
+        ))
