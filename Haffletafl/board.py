@@ -18,6 +18,27 @@ class Board:
                     pieces.append(piece)
         return pieces
 
+    def display_board(self):
+        cell_width = 3
+        
+        header = "   "
+        for col in range(self.dimension):
+            header += f"{col:>{cell_width}}"
+        print(header)
+
+        for row_idx, row in enumerate(self.board):
+            row_str = f"{row_idx:>2} "
+            
+            for cell in row:
+                if cell == 0:
+                    row_str += f"   "
+                elif cell.team == "black":
+                    row_str += f" B "
+                elif cell.team == "white":
+                    row_str += f" W "
+            
+            print(row_str)
+            
     def move(self, piece, row, col):
         self.board[piece.row][piece.col], self.board[row][col] = self.board[row][col], self.board[piece.row][piece.col]
         piece.move(row, col)
