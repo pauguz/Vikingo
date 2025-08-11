@@ -81,12 +81,15 @@ class vista:
         #    s.ventana.after(1000, s.turno_bot)  # Delay de 1 segundo
         
     def captura(s, p):
-        s.j.captura(p)
-        s.labels[p[0]][p[1]]=grf.etiquetado(p[0], p[1], s.ventana, s.Seleccionar)
         l=s.obtenerContNum(p)
         if l==[1, 0]:
             grf.fin('NEGRAS')
             grf.liberar(s.labels)
+        s.j.captura(p)
+        s.labels[p[0]][p[1]]=grf.etiquetado(p[0], p[1], s.ventana, s.Seleccionar)
+        
+        print(l)
+
 
     def Pruebas(s, p):
         mat.capturaEuro(s.j.posiciones, p, s.captura)
@@ -96,6 +99,21 @@ class vista:
         if(lis==[1, 0] and destino[0] in comp and destino[1] in comp):
             grf.fin('BLANCAS')
             grf.liberar(s.labels)
+
+        #ubicacion de destino, contenido de label, inicio
+    def jugada(s, ub, t):
+            casSel=mat.ubicar(s.labels, t)
+            l=obtener_Contenido(casSel)
+            s.tornar()           
+            #Parte Mejorable//Vaciar lab
+            s.labels[t[0]][t[1]]=grf.etiquetado(t[0], t[1], s.ventana, s.Seleccionar)
+            
+            grf.asignarImagen(s.j, ub, s.labels, *l)
+            s.j.mover( t, ub)
+            s.Pruebas(ub)
+            s.blanquear(l, ub)
+    
+
     
     def turno_bot(s, event=None):
         """Ejecuta el turno del bot"""
@@ -112,14 +130,7 @@ class vista:
             if mejor_movimiento:
                 inicio, destino = mejor_movimiento
                 print(f"Bot mueve desde {inicio} hacia {destino}")
-                
-                # Aplicar el movimiento del bot usando el método del juego
-                s.j.mover(inicio, destino)
-
-                casSel=mat.ubicar(s.labels, inicio)
-                l=obtener_Contenido(casSel)
-                
-                s.jugada(destino, l, inicio)
+                s.jugada(destino, inicio)
                 
                 print(f"Turno del bot completado. Ahora es turno de: {'Blancas' if s.turno == 1 else 'Negras'}")
             else:
@@ -131,16 +142,7 @@ class vista:
             traceback.print_exc()
     
         
-    #ubicacion de destino, contenido de label, inicio
-    def jugada(s, ub, l, t):
-            s.tornar()           
-            #Parte Mejorable//Vaciar lab
-            s.labels[t[0]][t[1]]=grf.etiquetado(t[0], t[1], s.ventana, s.Seleccionar)
-            
-            grf.asignarImagen(s.j, ub, s.labels, *l)
-            s.j.mover( t, ub)
-            s.Pruebas(ub)
-            s.blanquear(l, ub)
+
     
 
     def Seleccionar(s, event:tk.Event):
@@ -166,18 +168,17 @@ class vista:
 
         if(not boola and boolb):
             t=s.seleccion
-            casSel=mat.ubicar(s.labels, t)
             s.seleccion=None
-            l=obtener_Contenido(casSel)
             destino=event.widget
             ub=grf.ObtenerUbicación(destino)
             print("Destino: ", end=" ")
             print(ub)
         #comprobar si el movimiento es posible
             if( ub in s.movspos ): 
-                s.jugada(ub, l, t)
-                #for i in self.j.posiciones:
-                #    print(i)
+
+                s.jugada(ub, t)
+                for i in s.j.posiciones:
+                    print(i)
                 print("----------------------------------------------------------------")
             grf.restaurarMovimientos(s.labels, s.movspos)
 

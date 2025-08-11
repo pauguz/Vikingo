@@ -79,7 +79,7 @@ def ObtenerUbicación(label:tk.Label):
     return (row, column)
 
 
-def fin():
+def fin(st):
         fin=tk.Toplevel()
         fin.title("Fin del Juego")
         fin.geometry("600x450")
