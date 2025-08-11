@@ -135,7 +135,7 @@ def Discriminante(matriz:list, dup1, dup2, l):
             b=[1]
         else: b=ubicar(matriz, dup2)
         if b and a:
-            print("h")
+            print("contacto")
             return a[0]!=b[0]
         return False
 
@@ -146,7 +146,7 @@ def DiscDirecta(matriz, dup, drec, l):
 @staticmethod
 def DiscDoble(matriz, dup, drec, l):
     if(DiscDirecta(matriz, dup, drec, l)):
-        print("tr")
+        print("enemigo")
         return DiscDirecta(matriz, SumaDupla(dup, drec), drec, l)
     return False
 

@@ -43,7 +43,7 @@ def asignarImagen(j, dup, labels, num1:int, num2:int=1):
     tkimago=ImageTk.PhotoImage(image=imago)
     
     #Asignar Imagen y Texto
-    casilla.config(image=tkimago, text=t, width=30, height=32)
+    casilla.config(image=tkimago, text=t, width=30, height=32,   relief="solid")
     casilla.image=tkimago 
     #casilla.grid(row=dup[0],column=dup[1])
 
