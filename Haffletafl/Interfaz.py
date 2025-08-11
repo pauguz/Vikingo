@@ -6,11 +6,7 @@ from PIL import Image, ImageTk
 from Bando import bando
 from Bot import Bot
 
-def etiquetado(i:int, j:int, root, func):
-    label = tk.Label(root, width=4, height=2, relief="solid", borderwidth=3)
-    label.grid(row=i, column=j)
-    label.bind("<Button-1>", func)
-    return label
+
 
 def obtener_Contenido(lab: tk.Label):
     return list(map (int, lab.cget("text").split()))
@@ -42,6 +38,8 @@ class vista:
     def Inicio(s, event=None):
         s.labels=grf.etiquetados(s.ventana, s.Seleccionar, s.j.dim )
         grf.graficar(s.j, s.labels)
+        s.j.fichar()
+        s.turno=1
         
         # Si es turno del bot, hacer su jugada
         if s.modo != "humano" and s.turno != (1 if s.modo == "bot_blancas" else 0):
@@ -137,7 +135,7 @@ class vista:
     def jugada(s, ub, l, t):
             s.tornar()           
             #Parte Mejorable//Vaciar lab
-            s.labels[t[0]][t[1]]=etiquetado(t[0], t[1], s.ventana, s.Seleccionar)
+            s.labels[t[0]][t[1]]=grf.etiquetado(t[0], t[1], s.ventana, s.Seleccionar)
             
             grf.asignarImagen(s.j, ub, s.labels, *l)
             s.j.mover( t, ub)
@@ -162,7 +160,7 @@ class vista:
                 print("Contenido:", end=" ")
                 print(l)
                 print("Inicio: ", end=" ")
-                #print(s.seleccion)
+                print(s.seleccion)
                 s.movspos=mat.MovimientosPosibles(s.seleccion, s.obtenerContNum)
                 grf.graficarMovimientosPosibles(s.labels, s.movspos)
 

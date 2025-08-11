@@ -134,7 +134,11 @@ class Bot:
         """Verifica y aplica capturas después de un movimiento"""
         # Implementar lógica de captura según las reglas del Hnefatafl
         # Por ahora, una implementación básica
-        pass
+        mat.capturaEuro(
+        posiciones,
+        posicion,
+        lambda p: posiciones[p[0]].__setitem__(p[1], None)
+        )
     
     def minimax(self, posiciones: List[List], turno_actual: int, profundidad: int, 
                 alfa: float = float('-inf'), beta: float = float('inf'), 
