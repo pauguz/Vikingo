@@ -1,7 +1,7 @@
 import tkinter as tk
 from Bando import bando
 from PIL import Image, ImageTk 
-from matematiqueria import ubicar
+from matematiqueria import Coords
 
 
 def etiquetado(i:int, j:int, root, func):
@@ -11,6 +11,15 @@ def etiquetado(i:int, j:int, root, func):
     return label
 def etiquetados(v, func, d):
     return [[etiquetado(i,j, v, func) for j in range(d)] for i in range(d)]
+
+
+def crear_tablero(parent, func, dim:int):
+    """Crea un Frame con un tablero de tamaño dim x dim"""
+    tablero_frame = tk.Frame(parent, bg="beige")
+    tablero_frame.grid(row=0, column=0, padx=10, pady=10)
+    #tablero_frame.pack(side="top", pady=1)  # puedes usar grid/place si quieres
+    labels = etiquetados(tablero_frame, func, dim)
+    return tablero_frame, labels
 
 def ventor(v, tit):
     # Configurar el título de la ventana
@@ -36,7 +45,7 @@ def asignarImagen(j, dup, labels, num1:int, num2:int=1):
     else:
         imago=j.bandos[1].logo
     #Tomar el valor de la casilla
-    casilla=ubicar(labels, dup)
+    casilla=Coords.ubicar(labels, dup)
     #Ajustar tamaño de la imagen y su formato
     #imago=imago.resize((casilla.winfo_width(),casilla.winfo_height()), Image.LANCZOS )
     imago=imago.resize((30,30), Image.LANCZOS )

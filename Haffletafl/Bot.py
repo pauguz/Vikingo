@@ -4,11 +4,17 @@ from typing import List, Tuple, Optional
 from Juego import juego
 
 class Bot:
-    def __init__(self, juego_actual: juego, turno: int, max_depth: int = 4):
+    def __init__(self, juego_actual: juego, turno: int, max_depth: int = 4, registro:bool=False, ruta_registro="registro_bot.txt"):
         self.juego = juego_actual
         self.dimension = juego_actual.dim
         self.turno = turno
         self.max_depth = max_depth
+        self.registro = registro
+        self.ruta_registro = ruta_registro
+        if self.registro:
+            with open(self.ruta_registro, "w", encoding="utf-8") as f:
+                f.write("Registro de movimientos del bot\n")
+
         
         # Constantes para evaluación
         self.PESO_PEON = 10
@@ -39,7 +45,7 @@ class Bot:
                         pos_rey = (i, j)
         
         # Evaluación base: peones blancos valen más (2x) y el rey vale mucho más
-        evaluacion = (2 * peones_blancos - peones_negros) * self.PESO_PEON
+        evaluacion = ( peones_blancos - peones_negros) * self.PESO_PEON
         evaluacion += rey_blanco * self.PESO_REY
         
         # Evaluación de posición del rey (más cerca del centro = mejor)
@@ -57,6 +63,15 @@ class Bot:
         
         return evaluacion
     
+    def _registrar_movimiento(self, movimiento, valor, profundidad):
+        if not self.registro:
+            return
+        inicio, destino = movimiento
+        sangria = "\t" * (self.max_depth - profundidad)
+        linea = f"{sangria}{inicio}->{destino} {valor}\n"
+        with open(self.ruta_registro, "a", encoding="utf-8") as f:
+            f.write(linea)
+
     def generar_movimientos_validos(self, posiciones: List[List], turno_actual: int) -> List[Tuple]:
         """Genera todos los movimientos válidos para el turno actual"""
         movimientos = []
@@ -69,7 +84,7 @@ class Bot:
                     if (turno_actual == 0 and posiciones[i][j][0] == 0) or \
                        (turno_actual == 1 and posiciones[i][j][0] == 1):
                         # Generar movimientos posibles para esta ficha
-                        movimientos_ficha = mat.MovimientosPosibles((i, j), lambda pos: self._es_celda_ocupada(pos, posiciones))
+                        movimientos_ficha = mat.Movs.MovimientosPosibles((i, j), lambda pos: self._es_celda_ocupada(pos, posiciones))
                         
                         for destino in movimientos_ficha:
                             # Verificar que el movimiento sea válido según las reglas del Hnefatafl
@@ -80,15 +95,16 @@ class Bot:
     
     def _es_celda_ocupada(self, pos: Tuple[int, int], posiciones: List[List]) -> bool:
         """Verifica si una celda está ocupada"""
-        if not mat.validar(pos, self.dimension):
-            return True
-        return posiciones[pos[0]][pos[1]] is not None
+        if mat.Coords.validar(pos, self.dimension):
+            return posiciones[pos[0]][pos[1]] is not None
+        return True
+        
     
     def _es_movimiento_valido(self, inicio: Tuple[int, int], destino: Tuple[int, int], 
                              posiciones: List[List], turno_actual: int) -> bool:
         """Verifica si un movimiento es válido según las reglas del Hnefatafl"""
         # Verificar que el destino esté dentro del tablero
-        if not mat.validar(destino, self.dimension):
+        if not mat.Coords.validar(destino, self.dimension):
             return False
             
         # Verificar que el destino esté vacío
@@ -100,15 +116,15 @@ class Bot:
             return False
             
         # Verificar que no haya piezas en el camino
-        paso = mat.getPaso(inicio, destino)
+        paso = mat.DupOps.getPaso(inicio, destino)
         if paso is None:
             return False
             
-        pos_actual = mat.SumaDupla(inicio, paso)
+        pos_actual = mat.DupOps.SumaDupla(inicio, paso)
         while pos_actual != destino:
             if self._es_celda_ocupada(pos_actual, posiciones):
                 return False
-            pos_actual = mat.SumaDupla(pos_actual, paso)
+            pos_actual = mat.DupOps.SumaDupla(pos_actual, paso)
             
         return True
     
@@ -132,9 +148,8 @@ class Bot:
     
     def _verificar_capturas(self, posiciones: List[List], posicion: Tuple[int, int], turno_actual: int):
         """Verifica y aplica capturas después de un movimiento"""
-        # Implementar lógica de captura según las reglas del Hnefatafl
         # Por ahora, una implementación básica
-        mat.capturaEuro(
+        mat.Caps.capturaEuro(
         posiciones,
         posicion,
         lambda p: posiciones[p[0]].__setitem__(p[1], None)
@@ -168,6 +183,9 @@ class Bot:
                 # Llamada recursiva
                 valor, _ = self.minimax(nuevas_posiciones, nuevo_turno, profundidad - 1, 
                                        alfa, beta, False)
+
+                # Registrar cada movimiento y su valoración
+                self._registrar_movimiento(movimiento, valor, profundidad)
                 
                 # Actualizar mejor valor
                 if valor > valor_max:
@@ -190,7 +208,8 @@ class Bot:
                 # Llamada recursiva
                 valor, _ = self.minimax(nuevas_posiciones, nuevo_turno, profundidad - 1, 
                                        alfa, beta, True)
-                
+                # Registrar cada movimiento y su valoración
+                self._registrar_movimiento(movimiento, valor, profundidad)
                 # Actualizar mejor valor
                 if valor < valor_min:
                     valor_min = valor

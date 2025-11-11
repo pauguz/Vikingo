@@ -5,16 +5,16 @@ from Juego import juego
 from PIL import Image, ImageTk 
 from Bando import bando
 from Bot import Bot
-
-
+from Conteo import Multicuenta
 
 def obtener_Contenido(lab: tk.Label):
-    return list(map (int, lab.cget("text").split()))
+    return list(map(int, lab.cget("text").split()))
 
+strings=['NEGRAS', 'BLANCAS']
 
 class vista:
 
-    def __init__(s, jue:juego, turn=1, modo="humano"):
+    def __init__(s, jue:juego, turn=1, modo="humano", registro=True, seg=180):
         s.seleccion=None  
         # Crear una instancia de la ventana
         s.ventana = tk.Toplevel()
@@ -29,21 +29,31 @@ class vista:
         if modo != "humano":
             # Crear bot con la instancia del juego
             bot_turno = 1 if modo == "bot_blancas" else 0
-            s.bot = Bot(jue, bot_turno, max_depth=3)
+            s.bot = Bot(jue, bot_turno, max_depth=3, registro=registro)
+        else:
+                    # === MULTICUENTA ===
+            # función que se ejecuta cuando un reloj llega a 0
+            def fin_tiempo():
+                s.terminar(s.turno)  # el que debía jugar pierde por tiempo
+
+            # Dentro de tu clase principal o función Inicio:
+            s.relojes = Multicuenta(s.ventana, n=2, segundos=seg, funcion_final=fin_tiempo)
+            s.relojes.grid(row=0, column=1, rowspan=2, padx=20, pady=20, sticky="ew")
         
         s.llenar()
         s.Inicio()
 
     
     def Inicio(s, event=None):
-        s.labels=grf.etiquetados(s.ventana, s.Seleccionar, s.j.dim )
+        #s.labels=grf.etiquetados(s.ventana, s.Seleccionar, s.j.dim )
+        s.tablero ,s.labels = grf.crear_tablero(s.ventana, s.Seleccionar, s.j.dim)
         grf.graficar(s.j, s.labels)
         s.j.fichar()
+        s.j.imprimirTabla()
         s.turno=1
         
-        # Si es turno del bot, hacer su jugada
-        if s.modo != "humano" and s.turno != (1 if s.modo == "bot_blancas" else 0):
-            s.ventana.after(500, s.turno_bot)  # Delay de 500ms para que se vea el tablero
+    def Alternado(s):
+        s.relojes.cambiar()
         
     def llenar(s):
         s.nuncio=tk.Label(s.ventana, width=8, height=2, borderwidth=1, relief="solid")
@@ -69,7 +79,7 @@ class vista:
     
     def obtenerContNum(s, d:tuple):
         if(s.validar(d)):
-            return obtener_Contenido(mat.ubicar(s.labels, d))
+            return obtener_Contenido(mat.Coords.ubicar(s.labels, d))
         return [None]
     
     def tornar(s):
@@ -83,38 +93,36 @@ class vista:
     def captura(s, p):
         l=s.obtenerContNum(p)
         if l==[1, 0]:
-            grf.fin('NEGRAS')
-            grf.liberar(s.labels)
+            s.terminar(0)
         s.j.captura(p)
-        s.labels[p[0]][p[1]]=grf.etiquetado(p[0], p[1], s.ventana, s.Seleccionar)
-        
+        s.labels[p[0]][p[1]]=grf.etiquetado(p[0], p[1], s.tablero, s.Seleccionar)
         print(l)
 
-
     def Pruebas(s, p):
-        mat.capturaEuro(s.j.posiciones, p, s.captura)
+        mat.Caps.capturaEuro(s.j.posiciones, p, s.captura)
+    
+    def terminar(s, n):
+        grf.fin(strings[n])
+        grf.liberar(s.labels)
     
     def blanquear(s, lis, destino):
         comp=[s.j.dim-1, 0]
         if(lis==[1, 0] and destino[0] in comp and destino[1] in comp):
-            grf.fin('BLANCAS')
-            grf.liberar(s.labels)
+            s.terminar(1)
 
         #ubicacion de destino, contenido de label, inicio
     def jugada(s, ub, t):
-            casSel=mat.ubicar(s.labels, t)
+            casSel=mat.Coords.ubicar(s.labels, t)
             l=obtener_Contenido(casSel)
             s.tornar()           
             #Parte Mejorable//Vaciar lab
-            s.labels[t[0]][t[1]]=grf.etiquetado(t[0], t[1], s.ventana, s.Seleccionar)
-            
+            s.labels[t[0]][t[1]]=grf.etiquetado(t[0], t[1], s.tablero, s.Seleccionar)
+
             grf.asignarImagen(s.j, ub, s.labels, *l)
             s.j.mover( t, ub)
             s.Pruebas(ub)
             s.blanquear(l, ub)
-    
 
-    
     def turno_bot(s, event=None):
         """Ejecuta el turno del bot"""
         if s.bot is None:
@@ -131,6 +139,7 @@ class vista:
                 inicio, destino = mejor_movimiento
                 print(f"Bot mueve desde {inicio} hacia {destino}")
                 s.jugada(destino, inicio)
+                s.j.imprimirTabla()
                 
                 print(f"Turno del bot completado. Ahora es turno de: {'Blancas' if s.turno == 1 else 'Negras'}")
             else:
@@ -140,9 +149,6 @@ class vista:
             print(f"Error en turno del bot: {e}")
             import traceback
             traceback.print_exc()
-    
-        
-
     
 
     def Seleccionar(s, event:tk.Event):
@@ -163,7 +169,7 @@ class vista:
                 print(l)
                 print("Inicio: ", end=" ")
                 print(s.seleccion)
-                s.movspos=mat.MovimientosPosibles(s.seleccion, s.obtenerContNum)
+                s.movspos=mat.Movs.MovimientosPosibles(s.seleccion, s.obtenerContNum)
                 grf.graficarMovimientosPosibles(s.labels, s.movspos)
 
         if(not boola and boolb):
@@ -175,13 +181,10 @@ class vista:
             print(ub)
         #comprobar si el movimiento es posible
             if( ub in s.movspos ): 
-
                 s.jugada(ub, t)
-                for i in s.j.posiciones:
-                    print(i)
-                print("----------------------------------------------------------------")
+                s.Alternado()
+            s.j.imprimirTabla()
             grf.restaurarMovimientos(s.labels, s.movspos)
-
 
 #jue=juego(9, None)
 #jue.dibujar()
