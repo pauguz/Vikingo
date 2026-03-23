@@ -14,7 +14,3 @@ class bando:
 
     def capturar(s, n:int):
         s.miembros.pop(n)
-
-    
- 
-
